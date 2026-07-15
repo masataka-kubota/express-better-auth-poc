@@ -1,7 +1,7 @@
 {
   "name": "express-better-auth-poc",
-  "type": "module",
   "private": true,
+  "type": "module",
   "main": "./src/app.ts",
   "scripts": {
     "dev": "bun src/app.ts",

@@ -3,6 +3,7 @@
 A proof-of-concept (PoC) and boilerplate repository for implementing and validating authentication using Express, Better Auth, and Drizzle ORM (MySQL).
 
 ## 🛠 Tech Stack
+
 - **Runtime / Package Manager**: Bun
 - **Backend Framework**: Express (TypeScript)
 - **Authentication**: Better Auth
@@ -10,6 +11,7 @@ A proof-of-concept (PoC) and boilerplate repository for implementing and validat
 - **Database**: MySQL 8.4 (Docker Compose)
 
 ## 🚀 Features
+
 - **Type-Safe Authentication**: Robust schema definitions achieved through seamless integration between Better Auth and Drizzle ORM.
 - **Fast Developer Experience**: Blazing-fast package management and hot reloading powered by Bun.
 - **Portability**: Replicate the local development environment with a single command using Docker Compose.
