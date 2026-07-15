@@ -4,7 +4,12 @@
   "private": true,
   "main": "./src/app.ts",
   "scripts": {
-    "dev": "bun src/app.ts"
+    "dev": "bun src/app.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "express": "^5.2.1"
@@ -13,6 +18,8 @@
     "@types/bun": "latest",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
     "typescript": "^7.0.2"
   }
 }
