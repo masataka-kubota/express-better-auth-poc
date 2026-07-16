@@ -4,8 +4,8 @@
   "type": "module",
   "main": "./src/app.ts",
   "scripts": {
-    "dev": "bun src/app.ts",
-    "typecheck": "tsc --noEmit",
+    "dev": "bun --hot src/app.ts",
+    "type-check": "tsc --noEmit",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "format": "oxfmt .",
@@ -13,7 +13,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push:local": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "bun --env-file=.env src/db/seed.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.23",
