@@ -10,6 +10,9 @@
     "types": ["bun"],
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     // Bundler mode
     "moduleResolution": "bundler",
