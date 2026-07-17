@@ -4,12 +4,28 @@ import { betterAuth } from 'better-auth';
 import { db } from '@/db';
 import { authSchema } from '@/db/schema';
 
+const betterAuthUrl = process.env.BETTER_AUTH_URL;
+const betterAuthSecret = process.env.BETTER_AUTH_SECRET;
+
+if (!betterAuthUrl) {
+  throw new Error(
+    '❌ BETTER_AUTH_URL is not defined. Please set the BETTER_AUTH_URL environment variable.'
+  );
+}
+
+if (!betterAuthSecret) {
+  throw new Error(
+    '❌ BETTER_AUTH_SECRET is not defined. Please set the BETTER_AUTH_SECRET environment variable.'
+  );
+}
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'mysql',
     schema: authSchema
   }),
   emailAndPassword: { enabled: true },
-  baseUrl: process.env.BETTER_AUTH_URL!,
-  trustedOrigin: process.env.BETTER_AUTH_URL!
+  baseUrl: betterAuthUrl,
+  secret: betterAuthSecret,
+  trustedOrigin: betterAuthUrl
 });
