@@ -4,11 +4,11 @@ import 'dotenv/config';
  * Reads a required environment variable.
  *
  * @param name - Environment variable name (e.g. `"DATABASE_URL"`)
- * @returns The non-empty value
+ * @returns The non-empty trimmed value
  * @throws If the variable is missing or empty
  */
 const requireEnv = (name: string): string => {
-  const value = process.env[name];
+  const value = process.env[name]?.trim();
   if (!value) {
     throw new Error(`❌ ${name} is not defined. Please set the ${name} environment variable.`);
   }

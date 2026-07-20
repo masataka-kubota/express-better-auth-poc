@@ -2,7 +2,7 @@ import { toNodeHandler } from 'better-auth/node';
 import cors from 'cors';
 import express from 'express';
 
-import { env } from '@/env';
+import { env } from '@/lib/env';
 import { auth } from '@/lib/auth';
 
 const app = express();
