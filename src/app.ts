@@ -1,4 +1,4 @@
-import { fromNodeHeaders, toNodeHandler } from 'better-auth/node';
+import { toNodeHandler } from 'better-auth/node';
 import express from 'express';
 
 import { auth } from '@/lib/auth';
@@ -12,14 +12,6 @@ app.use(express.json());
 
 app.get('/', (_req, res) => {
   res.status(200).json({ message: 'Hello World!' });
-});
-
-app.get('/api/me', async (req, res) => {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers)
-  });
-
-  return res.json(session);
 });
 
 app.listen(port, () => {
