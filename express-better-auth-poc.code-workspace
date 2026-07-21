@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": ".",
+    },
+    {
+      "name": "backend",
+      "path": "./apps/backend",
+    },
+    // {
+    //   "name": "web",
+    //   "path": "./apps/web"
+    // }
+  ],
+  "settings": {
+    // hide packages directory in root
+    "files.exclude": {
+      "apps": true,
+    },
+  },
+}

@@ -5,47 +5,53 @@ A proof-of-concept (PoC) and boilerplate repository for implementing and validat
 ## 🛠 Tech Stack
 
 - **Runtime / Package Manager**: Bun
-- **Backend Framework**: Express (TypeScript)
+- **Backend Framework**: Express (TypeScript) — `apps/backend`
 - **Authentication**: Better Auth
 - **ORM**: Drizzle ORM
 - **Database**: MySQL 8.4 (Docker Compose)
 
-## 🚀 Features
+## 🏛️ Monorepo layout
 
-- **Type-Safe Authentication**: Robust schema definitions achieved through seamless integration between Better Auth and Drizzle ORM.
-- **Fast Developer Experience**: Blazing-fast package management and hot reloading powered by Bun.
-- **Portability**: Replicate the local development environment with a single command using Docker Compose.
-
-To install dependencies:
-
-```bash
-bun install
+```txt
+apps/
+  backend/   # Express + Better Auth
 ```
 
-To run:
+## 🛠️ Setup
 
 ```bash
+cd apps/backend
+bun install
+cp .env.example .env
+# Fill in DATABASE_URL, BETTER_AUTH_SECRET, etc.
+```
+
+## ✅ Run
+
+```bash
+cd apps/backend
 bun run dev
 ```
 
 ## 🐳 Docker for MySQL
 
-Start the MySQL container:
+From `apps/backend`:
 
 ```bash
 docker compose up -d
-```
-
-Stop the container:
-
-```bash
 docker compose down
+docker compose ps
 ```
 
-Check container status:
+## 🗄️ Database scripts
+
+From `apps/backend`:
 
 ```bash
-docker compose ps
+bun run db:generate
+bun run db:migrate
+bun run db:seed
+bun run db:studio
 ```
 
 This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
