@@ -7,6 +7,7 @@ A proof-of-concept (PoC) and boilerplate repository for implementing and validat
 - **Runtime / Package Manager**: Bun
 - **Backend Framework**: Express (TypeScript) — `apps/backend`
 - **Frontend**: TanStack Start (React + TanStack Router) — `apps/web`
+- **UI**: Mantine — `apps/web`
 - **Authentication**: Better Auth
 - **ORM**: Drizzle ORM
 - **Database**: MySQL 8.4 (Docker Compose)
@@ -16,7 +17,7 @@ A proof-of-concept (PoC) and boilerplate repository for implementing and validat
 ```txt
 apps/
   backend/   # Express + Better Auth
-  web/       # TanStack Start
+  web/       # TanStack Start + Mantine
 ```
 
 ## Setup

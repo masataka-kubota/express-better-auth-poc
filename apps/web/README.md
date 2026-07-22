@@ -27,7 +27,7 @@ bun run test
 
 ## Styling
 
-This project uses Mantine for styling.
+This project uses [Mantine](https://mantine.dev/) for UI components and styling (`@mantine/core`, `@mantine/hooks`). PostCSS is configured via `postcss.config.cjs` with `postcss-preset-mantine`.
 
 ## Linting & Formatting
 

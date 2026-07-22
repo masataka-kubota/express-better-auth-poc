@@ -1,14 +1,14 @@
+import { Button, Stack, Text, Title } from '@mantine/core';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({ component: Home });
 
 function Home() {
   return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
-    </div>
+    <Stack p="xl" gap="md">
+      <Title order={1}>Welcome to TanStack Start</Title>
+      <Text>Edit `src/routes/index.tsx` to get started.</Text>
+      <Button>Mantine is ready</Button>
+    </Stack>
   );
 }

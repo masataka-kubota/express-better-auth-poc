@@ -7,5 +7,6 @@
 - Start the web app with `cd apps/web && bun run dev`.
 - Keep Express + TypeScript for the API unless a task explicitly asks to switch to a Bun-native server.
 - Keep TanStack Start for the web app unless a task explicitly asks to switch frameworks.
+- Prefer Mantine (`@mantine/core`, `@mantine/hooks`) for UI in `apps/web`.
 - Prefer the project's existing Vitest setup in `apps/web` over introducing Jest.
 - When adding or updating scripts, keep them runnable through Bun and match the existing `apps/*/package.json` style.
