@@ -2,22 +2,26 @@
 
 A proof-of-concept (PoC) and boilerplate repository for implementing and validating authentication using Express, Better Auth, and Drizzle ORM (MySQL).
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Runtime / Package Manager**: Bun
 - **Backend Framework**: Express (TypeScript) — `apps/backend`
+- **Frontend**: TanStack Start (React + TanStack Router) — `apps/web`
 - **Authentication**: Better Auth
 - **ORM**: Drizzle ORM
 - **Database**: MySQL 8.4 (Docker Compose)
 
-## 🏛️ Monorepo layout
+## Layout
 
 ```txt
 apps/
   backend/   # Express + Better Auth
+  web/       # TanStack Start
 ```
 
-## 🛠️ Setup
+## Setup
+
+### Backend
 
 ```bash
 cd apps/backend
@@ -26,14 +30,30 @@ cp .env.example .env
 # Fill in DATABASE_URL, BETTER_AUTH_SECRET, etc.
 ```
 
-## ✅ Run
+### Web
+
+```bash
+cd apps/web
+bun install
+```
+
+## Run
+
+### Backend
 
 ```bash
 cd apps/backend
 bun run dev
 ```
 
-## 🐳 Docker for MySQL
+### Web
+
+```bash
+cd apps/web
+bun run dev
+```
+
+## Docker for MySQL
 
 From `apps/backend`:
 
@@ -43,7 +63,7 @@ docker compose down
 docker compose ps
 ```
 
-## 🗄️ Database scripts
+## Database scripts
 
 From `apps/backend`:
 

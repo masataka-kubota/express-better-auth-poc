@@ -8,10 +8,10 @@
       "name": "backend",
       "path": "./apps/backend",
     },
-    // {
-    //   "name": "web",
-    //   "path": "./apps/web"
-    // }
+    {
+      "name": "web",
+      "path": "./apps/web",
+    },
   ],
   "settings": {
     // hide packages directory in root
