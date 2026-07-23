@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "oxlint.config.ts", "vite.config.js"],
+  "include": ["**/*.ts", "**/*.tsx", "oxlint.config.ts", "vite.config.ts"],
 
   "compilerOptions": {
     "target": "ES2022",
