@@ -54,7 +54,7 @@ cd apps/web
 bun run dev
 ```
 
-Open `http://localhost:3000/login`.
+Open `http://localhost:5173/login` (the backend remains on port `3000`).
 
 Demo credentials (temporary auth, not Better Auth yet):
 
