@@ -2,7 +2,11 @@
 
 - Prefer Bun for package management and scripts in this project.
 - Use `bun install`, `bun run <script>`, `bun <file>`, and `bun test` instead of npm, pnpm, yarn, or Node-based equivalents.
-- For local development, start the app with `bun run dev`.
-- This repository currently uses Express with TypeScript, so keep that setup unless a task explicitly asks to switch to a Bun-native server.
-- Avoid introducing Vite, Jest, Vitest, or dotenv for new work in this repo.
-- When adding or updating scripts, keep them runnable through Bun and match the existing package.json style.
+- This repo is not a Bun workspaces monorepo. Apps live under `apps/backend` (Express) and `apps/web` (TanStack Start); install and run scripts from each app directory.
+- Start the backend with `cd apps/backend && bun run dev`.
+- Start the web app with `cd apps/web && bun run dev`.
+- Keep Express + TypeScript for the API unless a task explicitly asks to switch to a Bun-native server.
+- Keep TanStack Start for the web app unless a task explicitly asks to switch frameworks.
+- Prefer Mantine (`@mantine/core`, `@mantine/hooks`) for UI in `apps/web`.
+- Prefer the project's existing Vitest setup in `apps/web` over introducing Jest.
+- When adding or updating scripts, keep them runnable through Bun and match the existing `apps/*/package.json` style.

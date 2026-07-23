@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": ".",
+    },
+    {
+      "name": "backend",
+      "path": "./apps/backend",
+    },
+    {
+      "name": "web",
+      "path": "./apps/web",
+    },
+  ],
+  "settings": {
+    // hide apps directory in the root folder view (use backend/web roots instead)
+    "files.exclude": {
+      "apps": true,
+    },
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.oxc": "always",
+    },
+    "cSpell.userWords": ["oxlint", "oxfmt"],
+  },
+  "extensions": {
+    "recommendations": ["oxc.oxc-vscode"],
+  },
+}

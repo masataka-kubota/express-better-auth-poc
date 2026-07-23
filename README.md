@@ -2,50 +2,84 @@
 
 A proof-of-concept (PoC) and boilerplate repository for implementing and validating authentication using Express, Better Auth, and Drizzle ORM (MySQL).
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Runtime / Package Manager**: Bun
-- **Backend Framework**: Express (TypeScript)
+- **Backend Framework**: Express (TypeScript) — `apps/backend`
+- **Frontend**: TanStack Start (React + TanStack Router) — `apps/web`
+- **UI**: Mantine — `apps/web`
 - **Authentication**: Better Auth
 - **ORM**: Drizzle ORM
 - **Database**: MySQL 8.4 (Docker Compose)
 
-## 🚀 Features
+## Layout
 
-- **Type-Safe Authentication**: Robust schema definitions achieved through seamless integration between Better Auth and Drizzle ORM.
-- **Fast Developer Experience**: Blazing-fast package management and hot reloading powered by Bun.
-- **Portability**: Replicate the local development environment with a single command using Docker Compose.
+```txt
+apps/
+  backend/   # Express + Better Auth
+  web/       # TanStack Start + Mantine
+```
 
-To install dependencies:
+## Setup
+
+### Backend
 
 ```bash
+cd apps/backend
+bun install
+cp .env.example .env
+# Fill in DATABASE_URL, BETTER_AUTH_SECRET, etc.
+```
+
+### Web
+
+```bash
+cd apps/web
 bun install
 ```
 
-To run:
+## Run
+
+### Backend
 
 ```bash
+cd apps/backend
 bun run dev
 ```
 
-## 🐳 Docker for MySQL
+### Web
 
-Start the MySQL container:
+```bash
+cd apps/web
+bun run dev
+```
+
+Open `http://localhost:5173/login` (the backend remains on port `3000`).
+
+Demo credentials (temporary auth, not Better Auth yet):
+
+- Email: `admin@example.com`
+- Password: `password`
+
+## Docker for MySQL
+
+From `apps/backend`:
 
 ```bash
 docker compose up -d
-```
-
-Stop the container:
-
-```bash
 docker compose down
+docker compose ps
 ```
 
-Check container status:
+## Database scripts
+
+From `apps/backend`:
 
 ```bash
-docker compose ps
+bun run db:generate
+bun run db:migrate
+bun run db:seed
+bun run db:studio
 ```
 
 This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
