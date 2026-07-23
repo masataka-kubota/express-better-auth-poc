@@ -54,6 +54,13 @@ cd apps/web
 bun run dev
 ```
 
+Open `http://localhost:3000/login`.
+
+Demo credentials (temporary auth, not Better Auth yet):
+
+- Email: `admin@example.com`
+- Password: `password`
+
 ## Docker for MySQL
 
 From `apps/backend`:

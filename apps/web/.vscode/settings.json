@@ -14,5 +14,6 @@
     "**/*.sass",
     "**/*.less",
     "node_modules/@mantine/core/styles.css"
-  ]
+  ],
+  "cSpell.userWords": ["mantine"]
 }
