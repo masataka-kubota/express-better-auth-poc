@@ -15,7 +15,6 @@ const ColorSchemeToggle = () => {
       size="lg"
       aria-label={`Switch to ${next} mode`}
       onClick={() => setColorScheme(next)}
-      style={{ border: '1px solid var(--mantine-color-gray-3)' }}
     >
       {computed === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
     </ActionIcon>
