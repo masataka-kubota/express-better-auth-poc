@@ -1,6 +1,8 @@
 import { createServerFn } from '@tanstack/react-start';
 import { deleteCookie, getCookie, setCookie } from '@tanstack/react-start/server';
 
+// TODO: Replace with real Better Auth session validation once backend integration is complete.
+// Currently uses a trivial cookie check — not safe for any deployment.
 export const SESSION_COOKIE = 'poc_admin_session';
 
 export const DEMO_CREDENTIALS = {
