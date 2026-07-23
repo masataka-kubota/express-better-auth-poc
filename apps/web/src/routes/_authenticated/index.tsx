@@ -48,7 +48,7 @@ function OverviewPage() {
       <Card withBorder padding="lg" radius="md">
         <Group justify="space-between" mb="md">
           <Title order={4}>Recent activity</Title>
-          <Badge variant="light" color="accent">
+          <Badge variant="light" color="gray">
             Live sample
           </Badge>
         </Group>
