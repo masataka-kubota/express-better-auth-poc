@@ -28,6 +28,16 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
   const [opened, { toggle }] = useDisclosure();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: async () => {
+          await navigate({ to: '/login' });
+        },
+      },
+    });
+  };
+
   return (
     <AppShell
       header={{ height: 56 }}
@@ -70,10 +80,7 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
               variant="subtle"
               color="gray"
               leftSection={<LogOut size={16} />}
-              onClick={async () => {
-                await authClient.signOut();
-                await navigate({ to: '/login' });
-              }}
+              onClick={handleSignOut}
             >
               Log out
             </Button>

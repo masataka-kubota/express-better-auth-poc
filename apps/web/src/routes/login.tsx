@@ -11,7 +11,6 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
@@ -30,6 +29,7 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
@@ -40,31 +40,23 @@ function LoginPage() {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: async (values: { email: string; password: string }) => {
-      const result = await authClient.signIn.email({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
-
-      return result;
-    },
-    onSuccess: async () => {
-      setError(null);
-      await navigate({ to: '/' });
-    },
-    onError: (error: unknown) => {
-      setError(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
-    },
-  });
-
-  const handleSubmit = async (values: { email: string; password: string }) => {
+  const handleSubmit = async (values: typeof form.values) => {
     setError(null);
-    await mutation.mutateAsync(values);
+    setIsSubmitting(true);
+
+    await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+      fetchOptions: {
+        onSuccess: async () => {
+          await navigate({ to: '/' });
+        },
+        onError: (ctx) => {
+          setError(ctx.error?.message ?? 'Invalid email or password');
+          setIsSubmitting(false);
+        },
+      },
+    });
   };
 
   return (
@@ -115,7 +107,7 @@ function LoginPage() {
                   key={form.key('password')}
                   {...form.getInputProps('password')}
                 />
-                <Button type="submit" fullWidth loading={mutation.isPending} color="gray">
+                <Button type="submit" fullWidth loading={isSubmitting} color="gray">
                   Continue
                 </Button>
               </Stack>
