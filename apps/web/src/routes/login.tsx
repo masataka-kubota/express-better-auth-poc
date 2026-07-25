@@ -60,13 +60,7 @@ function LoginPage() {
   };
 
   return (
-    <Box
-      mih="100vh"
-      style={{
-        background:
-          'linear-gradient(135deg, var(--mantine-color-gray-0) 0%, var(--mantine-color-gray-1) 100%)',
-      }}
-    >
+    <Box mih="100vh">
       <GroupTop />
       <Container size={420} pt={80} pb={48}>
         <Stack gap="lg">
@@ -77,16 +71,7 @@ function LoginPage() {
             </Text>
           </Stack>
 
-          <Paper
-            withBorder
-            p="xl"
-            radius="md"
-            style={{
-              background: 'var(--mantine-color-body)',
-              borderColor: 'var(--mantine-color-gray-3)',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.04)',
-            }}
-          >
+          <Paper withBorder p="xl" radius="md">
             <form onSubmit={form.onSubmit(handleSubmit)}>
               <Stack gap="md">
                 {error ? (
