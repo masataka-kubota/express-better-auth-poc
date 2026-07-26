@@ -1,13 +1,15 @@
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import type { QueryClient } from '@tanstack/react-query';
 import { HeadContent, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
+import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools';
 import { theme } from '@/theme';
 
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools';
 import appCss from '../styles.css?url';
 
 interface MyRouterContext {
@@ -47,6 +49,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="auto">
+          <Notifications position="top-right" />
           {children}
         </MantineProvider>
         <TanStackDevtools

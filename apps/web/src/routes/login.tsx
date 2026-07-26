@@ -15,12 +15,12 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient } from '@/lib/auth-client';
+import { authClient, getAuthErrorMessage, hasValidSession } from '@/lib/auth-client';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
-    const session = await authClient.getSession();
-    if (session.data?.user) {
+    const authenticated = await hasValidSession();
+    if (authenticated) {
       throw redirect({ to: '/' });
     }
   },
@@ -41,22 +41,26 @@ function LoginPage() {
   });
 
   const handleSubmit = async (values: typeof form.values) => {
-    setError(null);
-    setIsSubmitting(true);
-
-    await authClient.signIn.email({
-      email: values.email,
-      password: values.password,
-      fetchOptions: {
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onRequest: () => {
+          setError(null);
+          setIsSubmitting(true);
+        },
         onSuccess: async () => {
+          setIsSubmitting(false);
           await navigate({ to: '/' });
         },
         onError: (ctx) => {
-          setError(ctx.error?.message ?? 'Invalid email or password');
           setIsSubmitting(false);
+          setError(getAuthErrorMessage(ctx.error));
         },
       },
-    });
+    );
   };
 
   return (
