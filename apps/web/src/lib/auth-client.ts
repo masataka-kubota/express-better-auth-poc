@@ -1,7 +1,7 @@
-import { notifications } from '@mantine/notifications';
 import { createAuthClient } from 'better-auth/react';
 
 import { env } from '@/lib/env';
+import { showErrorNotification } from '@/lib/notify';
 
 export const authClient = createAuthClient({
   baseURL: env.backendBaseUrl,
@@ -14,18 +14,16 @@ export const authClient = createAuthClient({
 
       const status = ctx.response?.status;
       if (!ctx.response) {
-        notifications.show({
-          title: 'Network Error',
-          message: 'Please check your connection or confirm that the server is running.',
-          color: 'red',
-        });
+        showErrorNotification(
+          'Network Error',
+          'Please check your connection or confirm that the server is running.',
+        );
         return;
       } else if (status && status >= 500) {
-        notifications.show({
-          title: 'Server Error',
-          message: 'The server is experiencing a temporary issue. Please try again shortly.',
-          color: 'red',
-        });
+        showErrorNotification(
+          'Server Error',
+          'The server is experiencing a temporary issue. Please try again shortly.',
+        );
       }
     },
   },
