@@ -4,7 +4,7 @@ import { createAuthClient } from 'better-auth/react';
 import { env } from '@/lib/env';
 
 export const authClient = createAuthClient({
-  baseURL: `${env.backendBaseUrl}`,
+  baseURL: env.backendBaseUrl,
   fetchOptions: {
     credentials: 'include',
     onError: (ctx) => {
