@@ -4,6 +4,12 @@ const { mockGetSession } = vi.hoisted(() => ({
   mockGetSession: vi.fn(),
 }));
 
+vi.mock('@/lib/env', () => ({
+  env: {
+    backendBaseUrl: 'http://localhost:3000',
+  },
+}));
+
 vi.mock('@mantine/notifications', () => ({
   notifications: {
     show: vi.fn(),
