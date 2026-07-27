@@ -15,7 +15,8 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient, getAuthErrorMessage, hasValidSession } from '@/lib/auth-client';
+import { authClient, hasValidSession } from '@/lib/auth-client';
+import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
