@@ -8,6 +8,10 @@ export const authClient = createAuthClient({
   fetchOptions: {
     credentials: 'include',
     onError: (ctx) => {
+      if (typeof window === 'undefined') {
+        return;
+      }
+
       const status = ctx.response?.status;
       if (!ctx.response) {
         notifications.show({
