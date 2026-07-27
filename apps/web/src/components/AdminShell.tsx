@@ -15,7 +15,7 @@ import { LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { logout } from '@/lib/auth';
+import { authClient } from '@/lib/auth-client';
 
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard },
@@ -27,6 +27,16 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [opened, { toggle }] = useDisclosure();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: async () => {
+          await navigate({ to: '/login' });
+        },
+      },
+    });
+  };
 
   return (
     <AppShell
@@ -70,10 +80,7 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
               variant="subtle"
               color="gray"
               leftSection={<LogOut size={16} />}
-              onClick={async () => {
-                await logout();
-                await navigate({ to: '/login' });
-              }}
+              onClick={handleSignOut}
             >
               Log out
             </Button>

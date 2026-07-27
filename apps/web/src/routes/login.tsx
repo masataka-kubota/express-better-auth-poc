@@ -1,6 +1,5 @@
 import {
   Alert,
-  Anchor,
   Box,
   Button,
   Container,
@@ -16,11 +15,12 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { DEMO_CREDENTIALS, getSession, login } from '@/lib/auth';
+import { authClient, hasValidSession } from '@/lib/auth-client';
+import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
-    const authenticated = await getSession();
+    const authenticated = await hasValidSession();
     if (authenticated) {
       throw redirect({ to: '/' });
     }
@@ -30,66 +30,54 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm({
     mode: 'uncontrolled',
-    initialValues: {
-      email: DEMO_CREDENTIALS.email,
-      password: DEMO_CREDENTIALS.password,
-    },
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Enter a valid email'),
       password: (value) => (value.length > 0 ? null : 'Password is required'),
     },
   });
 
+  const handleSubmit = async (values: typeof form.values) => {
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onRequest: () => {
+          setError(null);
+          setIsSubmitting(true);
+        },
+        onSuccess: async () => {
+          setIsSubmitting(false);
+          await navigate({ to: '/' });
+        },
+        onError: (ctx) => {
+          setIsSubmitting(false);
+          setError(getAuthErrorMessage(ctx.error));
+        },
+      },
+    );
+  };
+
   return (
-    <Box
-      mih="100vh"
-      style={{
-        background: 'linear-gradient(135deg, var(--mantine-color-gray-0) 0%, var(--mantine-color-gray-1) 100%)',
-      }}
-    >
+    <Box mih="100vh">
       <GroupTop />
       <Container size={420} pt={80} pb={48}>
         <Stack gap="lg">
           <Stack gap={6}>
             <Title order={2}>Sign in to Console</Title>
             <Text c="dimmed" size="sm">
-              Temporary demo auth for the admin shell. Better Auth will replace this later.
+              Sign in with the seeded Better Auth user to access the admin shell.
             </Text>
           </Stack>
 
-          <Paper
-            withBorder
-            p="xl"
-            radius="md"
-            style={{
-              background: 'var(--mantine-color-body)',
-              borderColor: 'var(--mantine-color-gray-3)',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.04)',
-            }}
-          >
-            <form
-              onSubmit={form.onSubmit(async (values) => {
-                setSubmitting(true);
-                setError(null);
-                try {
-                  const result = await login({ data: values });
-                  if (!result.ok) {
-                    setError(result.error);
-                    return;
-                  }
-                  await navigate({ to: '/' });
-                } catch {
-                  setError('Something went wrong. Please try again.');
-                } finally {
-                  setSubmitting(false);
-                }
-              })}
-            >
+          <Paper withBorder p="xl" radius="md">
+            <form onSubmit={form.onSubmit(handleSubmit)}>
               <Stack gap="md">
                 {error ? (
                   <Alert color="red" title="Could not sign in">
@@ -109,32 +97,12 @@ function LoginPage() {
                   key={form.key('password')}
                   {...form.getInputProps('password')}
                 />
-                <Button type="submit" fullWidth loading={submitting} color="gray">
+                <Button type="submit" fullWidth loading={isSubmitting} color="gray">
                   Continue
                 </Button>
               </Stack>
             </form>
           </Paper>
-
-          <Text size="xs" c="dimmed">
-            Demo credentials are prefilled:{' '}
-            <Text span fw={600} c="var(--mantine-color-text)">
-              {DEMO_CREDENTIALS.email}
-            </Text>{' '}
-            /{' '}
-            <Text span fw={600} c="var(--mantine-color-text)">
-              {DEMO_CREDENTIALS.password}
-            </Text>
-            . Inspired by docs consoles from{' '}
-            <Anchor href="https://developers.cloudflare.com/" target="_blank" size="xs">
-              Cloudflare
-            </Anchor>{' '}
-            and{' '}
-            <Anchor href="https://tanstack.com/" target="_blank" size="xs">
-              TanStack
-            </Anchor>
-            .
-          </Text>
         </Stack>
       </Container>
     </Box>
