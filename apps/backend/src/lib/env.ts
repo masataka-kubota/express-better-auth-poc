@@ -16,6 +16,16 @@ const requireEnv = (name: string): string => {
 };
 
 /**
+ * Parse comma-separated frontend origins from the environment variable.
+ */
+export const parseFrontendOrigins = (value: string): string[] => {
+  return value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
+};
+
+/**
  * Required environment variables for app startup.
  * Throws when this module is loaded if any key is missing.
  */
@@ -41,9 +51,9 @@ export const env = {
   betterAuthSecret: requireEnv('BETTER_AUTH_SECRET'),
 
   /**
-   * Frontend origin (`FRONTEND_URL`).
-   * Used for Express CORS allowlist and Better Auth `trustedOrigins`.
-   * Example (Vite): `http://localhost:5173`
+   * Frontend origins parsed from `FRONTEND_URL`.
+   * Used by Express CORS and Better Auth trusted origins.
+   * Example (Vite): `http://localhost:5173,http://localhost:4173`
    */
-  frontendUrl: requireEnv('FRONTEND_URL')
+  frontendUrls: parseFrontendOrigins(requireEnv('FRONTEND_URLS'))
 } as const;

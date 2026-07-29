@@ -10,7 +10,7 @@ const port = 3000;
 
 app.use(
   cors({
-    origin: env.frontendUrl,
+    origin: env.frontendUrls,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   })
