@@ -15,13 +15,14 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient, hasValidSession } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
+import { getServerSession } from '@/lib/auth-server';
 import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
-    const authenticated = await hasValidSession();
-    if (authenticated) {
+    const session = await getServerSession();
+    if (session) {
       throw redirect({ to: '/' });
     }
   },
