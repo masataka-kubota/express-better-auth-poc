@@ -7,14 +7,14 @@ interface ServerSessionPayload {
   user?: Record<string, unknown> | null;
 }
 
+type RequestHeaders = Pick<ReturnType<typeof getRequestHeaders>, 'get'>;
+
 /**
  * Resolve the current user's session on the server side using the incoming request headers.
  *
- * This is used by SSR route guards so protected pages can reject unauthenticated users
- * before rendering the page content.
+ * Exported separately so it can be tested without the `createServerFn` wrapper.
  */
-export const getServerSession = createServerFn({ method: 'GET' }).handler(async () => {
-  const headers = getRequestHeaders();
+export const resolveServerSession = async (headers: RequestHeaders): Promise<boolean> => {
   const cookie = headers.get('cookie') ?? '';
 
   const response = await fetch(`${env.backendBaseUrl}/api/auth/get-session`, {
@@ -31,4 +31,12 @@ export const getServerSession = createServerFn({ method: 'GET' }).handler(async 
 
   const data = (await response.json()) as ServerSessionPayload | null;
   return Boolean(data?.user);
+};
+
+/**
+ * Server function used by SSR route guards.
+ */
+export const getServerSession = createServerFn({ method: 'GET' }).handler(async () => {
+  const headers = getRequestHeaders();
+  return resolveServerSession(headers);
 });
