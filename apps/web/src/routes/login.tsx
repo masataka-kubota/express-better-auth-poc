@@ -10,41 +10,17 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { schemaResolver, useForm } from '@mantine/form';
 import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import z from 'zod';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
 import { authClient } from '@/lib/auth/authClient';
 import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
-
-/**
- * Validates the `redirect` search parameter for the login route.
- *
- * Only allows internal paths (starting with `/` but not `//`).
- * External URLs and protocol-relative URLs are rejected to prevent open redirects.
- *
- * @example
- * // Valid: /dashboard, /users/123
- * // Invalid: https://evil.com, //evil.com, /..
- */
-const loginSearchSchema = z.object({
-  redirect: z
-    .string()
-    .optional()
-    .transform((val) => {
-      if (!val) {
-        return undefined;
-      }
-      if (val.startsWith('//')) {
-        return undefined;
-      }
-      return val.startsWith('/') ? val : undefined;
-    }),
-});
+import { loginFormSchema, type LoginFormValues } from '@/lib/schemas';
+import { loginSearchSchema } from '@/lib/schemas/routes';
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search) => loginSearchSchema.parse(search),
@@ -65,15 +41,12 @@ function LoginPage() {
 
   const { redirect: redirectTo } = Route.useSearch();
 
-  const form = useForm({
+  const form = useForm<LoginFormValues>({
     mode: 'uncontrolled',
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Enter a valid email'),
-      password: (value) => (value.length > 0 ? null : 'Password is required'),
-    },
+    validate: schemaResolver(loginFormSchema, { sync: true }),
   });
 
-  const handleSubmit = async (values: typeof form.values) => {
+  const handleSubmit = async (values: LoginFormValues): Promise<void> => {
     await authClient.signIn.email(
       {
         email: values.email,

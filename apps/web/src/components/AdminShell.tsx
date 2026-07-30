@@ -36,7 +36,7 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
       fetchOptions: {
         onSuccess: async () => {
           setSessionQueryValue(queryClient, false);
-          await navigate({ to: '/login' });
+          await navigate({ to: '/login', search: { redirect: undefined } });
         },
       },
     });
