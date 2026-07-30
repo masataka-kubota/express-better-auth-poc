@@ -25,8 +25,15 @@
       "source.fixAll.oxc": "always",
     },
     "cSpell.userWords": ["oxlint", "oxfmt"],
+    "cssVariables.lookupFiles": [
+      "**/*.css",
+      "**/*.scss",
+      "**/*.sass",
+      "**/*.less",
+      "node_modules/@mantine/core/styles.css",
+    ],
   },
   "extensions": {
-    "recommendations": ["oxc.oxc-vscode"],
+    "recommendations": ["oxc.oxc-vscode", "vunguyentuan.vscode-css-variables"],
   },
 }
