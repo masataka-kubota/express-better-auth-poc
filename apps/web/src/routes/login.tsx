@@ -69,18 +69,39 @@ function LoginPage() {
   };
 
   return (
-    <Box mih="100vh">
-      <GroupTop />
-      <Container size={420} pt={80} pb={48}>
-        <Stack gap="lg">
-          <Stack gap={6}>
-            <Title order={2}>Sign in to Console</Title>
-            <Text c="dimmed" size="sm">
+    <Box
+      mih="100vh"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}
+    >
+      {/* Color scheme toggle */}
+      <Box
+        style={{
+          position: 'absolute',
+          top: 'var(--mantine-spacing-md)',
+          right: 'var(--mantine-spacing-md)',
+        }}
+      >
+        <ColorSchemeToggle />
+      </Box>
+
+      {/* Login form */}
+      <Container size={420} px="md">
+        <Stack gap="lg" align="center">
+          <Stack gap={6} align="center">
+            <Title order={2} ta="center">
+              Sign in to Console
+            </Title>
+            <Text c="dimmed" size="sm" ta="center">
               Sign in with the seeded Better Auth user to access the admin shell.
             </Text>
           </Stack>
 
-          <Paper withBorder p="xl" radius="md">
+          <Paper withBorder p="xl" radius="md" style={{ width: '100%' }}>
             <form onSubmit={form.onSubmit(handleSubmit)}>
               <Stack gap="md">
                 {error ? (
@@ -109,14 +130,6 @@ function LoginPage() {
           </Paper>
         </Stack>
       </Container>
-    </Box>
-  );
-}
-
-function GroupTop() {
-  return (
-    <Box px="md" pt="md" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <ColorSchemeToggle />
     </Box>
   );
 }
