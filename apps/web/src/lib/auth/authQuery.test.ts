@@ -4,7 +4,7 @@ import { sessionQueryOptions } from '@/lib/auth/authQuery';
 import { hasServerSession } from '@/lib/auth/authSession.functions';
 
 vi.mock('@/lib/auth/authSession.functions', () => ({
-  getServerSession: vi.fn(),
+  hasServerSession: vi.fn(),
 }));
 
 describe('sessionQueryOptions', () => {
@@ -12,7 +12,7 @@ describe('sessionQueryOptions', () => {
     vi.mocked(hasServerSession).mockReset();
   });
 
-  it('uses the shared session query key and delegates to getServerSession', async () => {
+  it('uses the shared session query key and delegates to hasServerSession', async () => {
     vi.mocked(hasServerSession).mockResolvedValueOnce(true);
 
     const options = sessionQueryOptions();
