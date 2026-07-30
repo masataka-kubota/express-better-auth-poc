@@ -14,13 +14,19 @@ import { useForm } from '@mantine/form';
 import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import z from 'zod';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
 import { authClient } from '@/lib/auth/authClient';
 import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
 
+const loginSearchSchema = z.object({
+  redirect: z.string().optional(),
+});
+
 export const Route = createFileRoute('/login')({
+  validateSearch: (search) => loginSearchSchema.parse(search),
   beforeLoad: async ({ context }) => {
     const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
     if (isAuthenticated) {
@@ -35,6 +41,8 @@ function LoginPage() {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { redirect: redirectTo } = Route.useSearch();
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -58,7 +66,7 @@ function LoginPage() {
         onSuccess: async () => {
           setIsSubmitting(false);
           setSessionQueryValue(queryClient, true);
-          await navigate({ to: '/' });
+          await navigate({ to: redirectTo ?? '/' });
         },
         onError: (ctx) => {
           setIsSubmitting(false);
