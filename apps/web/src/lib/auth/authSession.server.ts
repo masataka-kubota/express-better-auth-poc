@@ -11,7 +11,7 @@ interface ServerSessionPayload {
  *
  * This is the server-only implementation used by the SSR guard.
  */
-export const resolveServerSession = async (): Promise<boolean> => {
+export const verifyServerSession = async (): Promise<boolean> => {
   try {
     const headers = getRequestHeaders();
     const cookie = headers.get('cookie') ?? '';

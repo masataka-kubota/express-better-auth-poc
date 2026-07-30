@@ -1,7 +1,7 @@
 import { getRequestHeaders } from '@tanstack/react-start/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { resolveServerSession } from '@/lib/auth/authSession.server';
+import { verifyServerSession } from '@/lib/auth/authSession.server';
 
 vi.mock('@/lib/env', () => ({
   env: {
@@ -34,7 +34,7 @@ describe('resolveServerSession', () => {
     });
     mockHeaders('session=abc');
 
-    await expect(resolveServerSession()).resolves.toBe(true);
+    await expect(verifyServerSession()).resolves.toBe(true);
   });
 
   it('returns false when the session response does not contain a user', async () => {
@@ -44,7 +44,7 @@ describe('resolveServerSession', () => {
     });
     mockHeaders('session=abc');
 
-    await expect(resolveServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBe(false);
   });
 
   it('returns false when the session response is null', async () => {
@@ -54,7 +54,7 @@ describe('resolveServerSession', () => {
     });
     mockHeaders('session=abc');
 
-    await expect(resolveServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBe(false);
   });
 
   it('returns false when the backend response is not ok', async () => {
@@ -65,14 +65,14 @@ describe('resolveServerSession', () => {
     });
     mockHeaders('session=expired');
 
-    await expect(resolveServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBe(false);
   });
 
-  it('rejects when the backend request fails', async () => {
+  it('returns false when the backend request fails', async () => {
     globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('ECONNREFUSED'));
     mockHeaders('session=abc');
 
-    await expect(resolveServerSession()).rejects.toThrow('ECONNREFUSED');
+    await expect(verifyServerSession()).resolves.toBe(false);
   });
 
   it('passes the cookie header to the backend request', async () => {
@@ -83,7 +83,7 @@ describe('resolveServerSession', () => {
     globalThis.fetch = fetchMock;
     mockHeaders('my-session=xyz');
 
-    await resolveServerSession();
+    await verifyServerSession();
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://localhost:3000/api/auth/get-session',
@@ -101,7 +101,7 @@ describe('resolveServerSession', () => {
     globalThis.fetch = fetchMock;
     mockHeaders(null);
 
-    await resolveServerSession();
+    await verifyServerSession();
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.any(String),
