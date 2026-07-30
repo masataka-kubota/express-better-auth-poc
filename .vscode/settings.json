@@ -1,0 +1,20 @@
+{
+  // hide apps directory in the root folder view (use backend/web roots instead)
+  "files.exclude": {
+    "apps": true
+  },
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always"
+  },
+  "cSpell.userWords": ["oxlint", "oxfmt"],
+  "cssVariables.lookupFiles": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "node_modules/@mantine/core/styles.css"
+  ]
+}
