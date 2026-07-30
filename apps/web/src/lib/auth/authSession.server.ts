@@ -12,21 +12,25 @@ interface ServerSessionPayload {
  * This is the server-only implementation used by the SSR guard.
  */
 export const resolveServerSession = async (): Promise<boolean> => {
-  const headers = getRequestHeaders();
-  const cookie = headers.get('cookie') ?? '';
+  try {
+    const headers = getRequestHeaders();
+    const cookie = headers.get('cookie') ?? '';
 
-  const response = await fetch(`${env.backendBaseUrl}/api/auth/get-session`, {
-    credentials: 'include',
-    headers: {
-      accept: 'application/json',
-      cookie,
-    },
-  });
+    const response = await fetch(`${env.backendBaseUrl}/api/auth/get-session`, {
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        cookie,
+      },
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = (await response.json()) as ServerSessionPayload | null;
+    return Boolean(data?.user);
+  } catch {
     return false;
   }
-
-  const data = (await response.json()) as ServerSessionPayload | null;
-  return Boolean(data?.user);
 };
