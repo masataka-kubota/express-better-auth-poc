@@ -1,3 +1,4 @@
+import { parseFrontendOrigins } from '@/lib/parseFrontendOrigins';
 import 'dotenv/config';
 
 /**
@@ -41,9 +42,9 @@ export const env = {
   betterAuthSecret: requireEnv('BETTER_AUTH_SECRET'),
 
   /**
-   * Frontend origin (`FRONTEND_URL`).
-   * Used for Express CORS allowlist and Better Auth `trustedOrigins`.
-   * Example (Vite): `http://localhost:5173`
+   * Frontend origins parsed from `FRONTEND_URLS`.
+   * Used by Express CORS and Better Auth trusted origins.
+   * Example (Vite): `http://localhost:5173,http://localhost:4173`
    */
-  frontendUrl: requireEnv('FRONTEND_URL')
+  frontendUrls: parseFrontendOrigins(requireEnv('FRONTEND_URLS'))
 } as const;

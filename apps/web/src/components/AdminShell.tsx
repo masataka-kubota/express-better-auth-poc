@@ -10,12 +10,14 @@ import {
   Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth/authClient';
+import { setSessionQueryValue } from '@/lib/auth/authQuery';
 
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard },
@@ -25,6 +27,7 @@ const navItems = [
 
 const AdminShell = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [opened, { toggle }] = useDisclosure();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -32,6 +35,7 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: async () => {
+          setSessionQueryValue(queryClient, false);
           await navigate({ to: '/login' });
         },
       },

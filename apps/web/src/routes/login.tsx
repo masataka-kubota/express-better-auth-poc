@@ -11,17 +11,46 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import z from 'zod';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient, hasValidSession } from '@/lib/auth-client';
-import { getAuthErrorMessage } from '@/utils/auth-errors';
+import { authClient } from '@/lib/auth/authClient';
+import { getAuthErrorMessage } from '@/lib/auth/authErrors';
+import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
+
+/**
+ * Validates the `redirect` search parameter for the login route.
+ *
+ * Only allows internal paths (starting with `/` but not `//`).
+ * External URLs and protocol-relative URLs are rejected to prevent open redirects.
+ *
+ * @example
+ * // Valid: /dashboard, /users/123
+ * // Invalid: https://evil.com, //evil.com, /..
+ */
+const loginSearchSchema = z.object({
+  redirect: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val) {
+        return undefined;
+      }
+      if (val.startsWith('//')) {
+        return undefined;
+      }
+      return val.startsWith('/') ? val : undefined;
+    }),
+});
 
 export const Route = createFileRoute('/login')({
-  beforeLoad: async () => {
-    const authenticated = await hasValidSession();
-    if (authenticated) {
+  validateSearch: (search) => loginSearchSchema.parse(search),
+  beforeLoad: async ({ context }) => {
+    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
+    if (isAuthenticated) {
       throw redirect({ to: '/' });
     }
   },
@@ -30,8 +59,11 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { redirect: redirectTo } = Route.useSearch();
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -54,7 +86,8 @@ function LoginPage() {
         },
         onSuccess: async () => {
           setIsSubmitting(false);
-          await navigate({ to: '/' });
+          setSessionQueryValue(queryClient, true);
+          await navigate({ to: redirectTo ?? '/' });
         },
         onError: (ctx) => {
           setIsSubmitting(false);
@@ -65,18 +98,39 @@ function LoginPage() {
   };
 
   return (
-    <Box mih="100vh">
-      <GroupTop />
-      <Container size={420} pt={80} pb={48}>
-        <Stack gap="lg">
-          <Stack gap={6}>
-            <Title order={2}>Sign in to Console</Title>
-            <Text c="dimmed" size="sm">
+    <Box
+      mih="100vh"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}
+    >
+      {/* Color scheme toggle */}
+      <Box
+        style={{
+          position: 'absolute',
+          top: 'var(--mantine-spacing-md)',
+          right: 'var(--mantine-spacing-md)',
+        }}
+      >
+        <ColorSchemeToggle />
+      </Box>
+
+      {/* Login form */}
+      <Container size={420} px="md">
+        <Stack gap="lg" align="center">
+          <Stack gap={6} align="center">
+            <Title order={2} ta="center">
+              Sign in to Console
+            </Title>
+            <Text c="dimmed" size="sm" ta="center">
               Sign in with the seeded Better Auth user to access the admin shell.
             </Text>
           </Stack>
 
-          <Paper withBorder p="xl" radius="md">
+          <Paper withBorder p="xl" radius="md" style={{ width: '100%' }}>
             <form onSubmit={form.onSubmit(handleSubmit)}>
               <Stack gap="md">
                 {error ? (
@@ -105,14 +159,6 @@ function LoginPage() {
           </Paper>
         </Stack>
       </Container>
-    </Box>
-  );
-}
-
-function GroupTop() {
-  return (
-    <Box px="md" pt="md" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <ColorSchemeToggle />
     </Box>
   );
 }
