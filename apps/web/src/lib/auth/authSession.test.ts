@@ -13,7 +13,7 @@ vi.mock('@tanstack/react-start/server', () => ({
   getRequestHeaders: vi.fn(),
 }));
 
-describe('resolveServerSession', () => {
+describe('verifyServerSession', () => {
   const originalFetch = globalThis.fetch;
 
   afterEach(() => {
