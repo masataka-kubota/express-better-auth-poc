@@ -16,13 +16,13 @@ import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
 import { authClient } from '@/lib/auth-client';
-import { getServerSession } from '@/lib/auth-server';
+import { getServerSession } from '@/lib/auth-session.functions';
 import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
-    const session = await getServerSession();
-    if (session) {
+    const isAuthenticated = await getServerSession();
+    if (isAuthenticated) {
       throw redirect({ to: '/' });
     }
   },

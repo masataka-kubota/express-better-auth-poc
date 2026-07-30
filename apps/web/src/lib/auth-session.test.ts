@@ -1,6 +1,7 @@
+import { getRequestHeaders } from '@tanstack/react-start/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { resolveServerSession } from './auth-server';
+import { resolveServerSession } from './auth-session.server';
 
 vi.mock('@/lib/env', () => ({
   env: {
@@ -8,22 +9,32 @@ vi.mock('@/lib/env', () => ({
   },
 }));
 
+vi.mock('@tanstack/react-start/server', () => ({
+  getRequestHeaders: vi.fn(),
+}));
+
 describe('resolveServerSession', () => {
   const originalFetch = globalThis.fetch;
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
+    vi.mocked(getRequestHeaders).mockReset();
   });
+
+  const mockHeaders = (cookie: string | null) => {
+    vi.mocked(getRequestHeaders).mockReturnValue({
+      get: (name: string) => (name === 'cookie' ? cookie : null),
+    } as ReturnType<typeof getRequestHeaders>);
+  };
 
   it('returns true when the session response contains a user', async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: async () => ({ user: { id: '1' } }),
     });
+    mockHeaders('session=abc');
 
-    const headers = { get: (name: string) => (name === 'cookie' ? 'session=abc' : null) };
-
-    await expect(resolveServerSession(headers)).resolves.toBe(true);
+    await expect(resolveServerSession()).resolves.toBe(true);
   });
 
   it('returns false when the session response does not contain a user', async () => {
@@ -31,10 +42,9 @@ describe('resolveServerSession', () => {
       ok: true,
       json: async () => ({ user: null }),
     });
+    mockHeaders('session=abc');
 
-    const headers = { get: (name: string) => (name === 'cookie' ? 'session=abc' : null) };
-
-    await expect(resolveServerSession(headers)).resolves.toBe(false);
+    await expect(resolveServerSession()).resolves.toBe(false);
   });
 
   it('returns false when the session response is null', async () => {
@@ -42,10 +52,9 @@ describe('resolveServerSession', () => {
       ok: true,
       json: async () => null,
     });
+    mockHeaders('session=abc');
 
-    const headers = { get: (name: string) => (name === 'cookie' ? 'session=abc' : null) };
-
-    await expect(resolveServerSession(headers)).resolves.toBe(false);
+    await expect(resolveServerSession()).resolves.toBe(false);
   });
 
   it('returns false when the backend response is not ok', async () => {
@@ -54,18 +63,16 @@ describe('resolveServerSession', () => {
       status: 401,
       statusText: 'Unauthorized',
     });
+    mockHeaders('session=expired');
 
-    const headers = { get: (name: string) => (name === 'cookie' ? 'session=expired' : null) };
-
-    await expect(resolveServerSession(headers)).resolves.toBe(false);
+    await expect(resolveServerSession()).resolves.toBe(false);
   });
 
   it('rejects when the backend request fails', async () => {
     globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('ECONNREFUSED'));
+    mockHeaders('session=abc');
 
-    const headers = { get: (name: string) => (name === 'cookie' ? 'session=abc' : null) };
-
-    await expect(resolveServerSession(headers)).rejects.toThrow('ECONNREFUSED');
+    await expect(resolveServerSession()).rejects.toThrow('ECONNREFUSED');
   });
 
   it('passes the cookie header to the backend request', async () => {
@@ -74,10 +81,9 @@ describe('resolveServerSession', () => {
       json: async () => ({ user: { id: '1' } }),
     });
     globalThis.fetch = fetchMock;
+    mockHeaders('my-session=xyz');
 
-    const headers = { get: (name: string) => (name === 'cookie' ? 'my-session=xyz' : null) };
-
-    await resolveServerSession(headers);
+    await resolveServerSession();
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://localhost:3000/api/auth/get-session',
@@ -93,10 +99,9 @@ describe('resolveServerSession', () => {
       json: async () => ({ user: null }),
     });
     globalThis.fetch = fetchMock;
+    mockHeaders(null);
 
-    const headers = { get: (_name: string) => null };
-
-    await resolveServerSession(headers);
+    await resolveServerSession();
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.any(String),

@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+import { authClient } from '@/lib/auth-client';
 
 const { mockGetSession } = vi.hoisted(() => ({
   mockGetSession: vi.fn(),
@@ -22,25 +24,8 @@ vi.mock('better-auth/react', () => ({
   }),
 }));
 
-import { hasValidSession } from './auth-client';
-
-describe('hasValidSession', () => {
-  beforeEach(() => {
-    mockGetSession.mockReset();
-  });
-
-  it('returns true when the session contains a user', async () => {
-    mockGetSession.mockResolvedValueOnce({
-      data: { user: { id: '1' } },
-      error: null,
-    });
-
-    await expect(hasValidSession()).resolves.toBe(true);
-  });
-
-  it('returns false when getSession throws', async () => {
-    mockGetSession.mockRejectedValueOnce(new Error('network'));
-
-    await expect(hasValidSession()).resolves.toBe(false);
+describe('auth client setup', () => {
+  it('creates the auth client without throwing', async () => {
+    expect(authClient).toBeDefined();
   });
 });

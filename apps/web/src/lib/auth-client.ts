@@ -29,22 +29,3 @@ export const authClient = createAuthClient({
   },
 });
 
-/**
- * Check whether the current user has a valid session.
- * Returns false for network or session lookup failures so the caller can continue safely.
- *
- * @returns True when a session with a user exists, otherwise false.
- */
-export const hasValidSession = async () => {
-  try {
-    const { data, error } = await authClient.getSession();
-
-    if (error) {
-      return false;
-    }
-
-    return Boolean(data?.user);
-  } catch {
-    return false;
-  }
-};
