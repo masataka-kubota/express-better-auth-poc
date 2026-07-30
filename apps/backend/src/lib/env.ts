@@ -1,3 +1,4 @@
+import { parseFrontendOrigins } from '@/lib/parseFrontendOrigins';
 import 'dotenv/config';
 
 /**
@@ -13,16 +14,6 @@ const requireEnv = (name: string): string => {
     throw new Error(`❌ ${name} is not defined. Please set the ${name} environment variable.`);
   }
   return value;
-};
-
-/**
- * Parse comma-separated frontend origins from the environment variable.
- */
-export const parseFrontendOrigins = (value: string): string[] => {
-  return value
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter((origin) => origin.length > 0);
 };
 
 /**
