@@ -51,7 +51,7 @@ export const env = {
   betterAuthSecret: requireEnv('BETTER_AUTH_SECRET'),
 
   /**
-   * Frontend origins parsed from `FRONTEND_URL`.
+   * Frontend origins parsed from `FRONTEND_URLS`.
    * Used by Express CORS and Better Auth trusted origins.
    * Example (Vite): `http://localhost:5173,http://localhost:4173`
    */
