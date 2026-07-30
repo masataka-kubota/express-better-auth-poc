@@ -1,6 +1,6 @@
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
-import { getServerSession } from '@/lib/auth/authSession.functions';
+import { hasServerSession } from '@/lib/auth/authSession.functions';
 
 const sessionQueryKey = ['session'] as const;
 
@@ -10,7 +10,7 @@ const sessionQueryKey = ['session'] as const;
 export const sessionQueryOptions = () =>
   queryOptions({
     queryKey: sessionQueryKey,
-    queryFn: () => getServerSession(),
+    queryFn: () => hasServerSession(),
     staleTime: 1000 * 60 * 5,
   });
 

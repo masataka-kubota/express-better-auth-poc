@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sessionQueryOptions } from '@/lib/auth/authQuery';
-import { getServerSession } from '@/lib/auth/authSession.functions';
+import { hasServerSession } from '@/lib/auth/authSession.functions';
 
 vi.mock('@/lib/auth/authSession.functions', () => ({
   getServerSession: vi.fn(),
@@ -9,17 +9,17 @@ vi.mock('@/lib/auth/authSession.functions', () => ({
 
 describe('sessionQueryOptions', () => {
   beforeEach(() => {
-    vi.mocked(getServerSession).mockReset();
+    vi.mocked(hasServerSession).mockReset();
   });
 
   it('uses the shared session query key and delegates to getServerSession', async () => {
-    vi.mocked(getServerSession).mockResolvedValueOnce(true);
+    vi.mocked(hasServerSession).mockResolvedValueOnce(true);
 
     const options = sessionQueryOptions();
     const result = await options.queryFn?.({ queryKey: options.queryKey } as never);
 
     expect(options.queryKey).toEqual(['session']);
     expect(result).toBe(true);
-    expect(getServerSession).toHaveBeenCalledTimes(1);
+    expect(hasServerSession).toHaveBeenCalledTimes(1);
   });
 });
