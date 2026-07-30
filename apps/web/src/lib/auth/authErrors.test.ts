@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getAuthErrorMessage } from '@/utils/auth-errors';
+import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 
 /**
  * Create a minimal error-like object compatible with getAuthErrorMessage.

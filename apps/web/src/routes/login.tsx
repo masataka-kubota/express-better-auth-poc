@@ -17,8 +17,8 @@ import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
 import { authClient } from '@/lib/auth/authClient';
+import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
-import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async ({ context }) => {
