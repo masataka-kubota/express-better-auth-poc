@@ -11,17 +11,18 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
 import { authClient } from '@/lib/auth-client';
-import { getServerSession } from '@/lib/auth-session.functions';
+import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth-query';
 import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({
-  beforeLoad: async () => {
-    const isAuthenticated = await getServerSession();
+  beforeLoad: async ({ context }) => {
+    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
     if (isAuthenticated) {
       throw redirect({ to: '/' });
     }
@@ -31,6 +32,7 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,6 +57,7 @@ function LoginPage() {
         },
         onSuccess: async () => {
           setIsSubmitting(false);
+          setSessionQueryValue(queryClient, true);
           await navigate({ to: '/' });
         },
         onError: (ctx) => {

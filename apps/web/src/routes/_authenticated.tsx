@@ -1,17 +1,20 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 
 import AdminShell from '@/components/AdminShell';
-import { getServerSession } from '@/lib/auth-session.functions';
+import { sessionQueryOptions } from '@/lib/auth-query';
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: async ({ location }) => {
-    const isAuthenticated = await getServerSession();
+  beforeLoad: async ({ context, location }) => {
+    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
+
     if (!isAuthenticated) {
       throw redirect({
         to: '/login',
         search: { redirect: location.href },
       });
     }
+
+    return { isAuthenticated };
   },
   component: AuthenticatedLayout,
 });
