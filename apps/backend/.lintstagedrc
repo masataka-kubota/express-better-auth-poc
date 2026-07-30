@@ -1,0 +1,4 @@
+{
+  "*.{js,ts}": ["bunx oxlint --fix", "bunx oxfmt --no-error-on-unmatched-pattern"],
+  "*.{json,yaml,yml,md}": ["bunx oxfmt --no-error-on-unmatched-pattern"]
+}

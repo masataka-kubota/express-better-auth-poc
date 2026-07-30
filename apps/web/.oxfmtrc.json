@@ -3,7 +3,7 @@
   "printWidth": 100,
   "tabWidth": 2,
   "singleQuote": true,
-  "ignorePatterns": [],
+  "ignorePatterns": ["bun.lock", "routeTree.gen.ts", "dist/**"],
   "sortImports": {
     "groups": [
       ["builtin", "external"],
