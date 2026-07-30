@@ -21,8 +21,29 @@ import { authClient } from '@/lib/auth/authClient';
 import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
 
+/**
+ * Validates the `redirect` search parameter for the login route.
+ *
+ * Only allows internal paths (starting with `/` but not `//`).
+ * External URLs and protocol-relative URLs are rejected to prevent open redirects.
+ *
+ * @example
+ * // Valid: /dashboard, /users/123
+ * // Invalid: https://evil.com, //evil.com, /..
+ */
 const loginSearchSchema = z.object({
-  redirect: z.string().optional(),
+  redirect: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val) {
+        return undefined;
+      }
+      if (val.startsWith('//')) {
+        return undefined;
+      }
+      return val.startsWith('/') ? val : undefined;
+    }),
 });
 
 export const Route = createFileRoute('/login')({
