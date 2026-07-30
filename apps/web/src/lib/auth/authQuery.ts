@@ -1,6 +1,6 @@
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
-import { getServerSession } from '@/lib/auth-session.functions';
+import { getServerSession } from '@/lib/auth/authSession.functions';
 
 const sessionQueryKey = ['session'] as const;
 

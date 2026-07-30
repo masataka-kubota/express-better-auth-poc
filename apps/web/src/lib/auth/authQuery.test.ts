@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { sessionQueryOptions } from '@/lib/auth-query';
+import { sessionQueryOptions } from '@/lib/auth/authQuery';
+import { getServerSession } from '@/lib/auth/authSession.functions';
 
-import { getServerSession } from './auth-session.functions';
-
-vi.mock('./auth-session.functions', () => ({
+vi.mock('@/lib/auth/authSession.functions', () => ({
   getServerSession: vi.fn(),
 }));
 

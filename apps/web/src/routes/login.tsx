@@ -16,8 +16,8 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient } from '@/lib/auth-client';
-import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth-query';
+import { authClient } from '@/lib/auth/authClient';
+import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
 import { getAuthErrorMessage } from '@/utils/auth-errors';
 
 export const Route = createFileRoute('/login')({

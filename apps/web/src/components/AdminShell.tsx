@@ -16,8 +16,8 @@ import { LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient } from '@/lib/auth-client';
-import { setSessionQueryValue } from '@/lib/auth-query';
+import { authClient } from '@/lib/auth/authClient';
+import { setSessionQueryValue } from '@/lib/auth/authQuery';
 
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard },

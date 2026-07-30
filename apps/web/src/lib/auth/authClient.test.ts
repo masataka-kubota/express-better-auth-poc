@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth/authClient';
 
 const { mockGetSession } = vi.hoisted(() => ({
   mockGetSession: vi.fn(),

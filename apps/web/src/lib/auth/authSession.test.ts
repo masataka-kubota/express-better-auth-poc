@@ -1,7 +1,7 @@
 import { getRequestHeaders } from '@tanstack/react-start/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { resolveServerSession } from './auth-session.server';
+import { resolveServerSession } from '@/lib/auth/authSession.server';
 
 vi.mock('@/lib/env', () => ({
   env: {
