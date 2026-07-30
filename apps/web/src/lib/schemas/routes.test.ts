@@ -60,7 +60,7 @@ describe('loginSearchSchema', () => {
     }
   });
 
-  it('rejects a protocol-relative redirect', () => {
+  it('sanitizes a protocol-relative redirect to undefined', () => {
     const result = loginSearchSchema.safeParse({ redirect: '//evil.com' });
     expect(result.success).toBe(true);
     if (result.success) {
