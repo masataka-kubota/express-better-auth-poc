@@ -2,9 +2,8 @@ import { z } from 'zod';
 
 /**
  * Validates the `redirect` search parameter for the login route.
- *
  * Only allows internal paths (starting with `/` but not `//`).
- * External URLs and protocol-relative URLs are rejected to prevent open redirects.
+ * External URLs and protocol-relative URLs are sanitized to undefined to prevent open redirects.
  */
 export const redirectSchema = z
   .string()
