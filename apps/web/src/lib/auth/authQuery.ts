@@ -1,4 +1,4 @@
-import { queryOptions, type QueryClient } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 
 import { hasServerSession } from '@/lib/auth/authSession.functions';
 
@@ -13,13 +13,3 @@ export const sessionQueryOptions = () =>
     queryFn: () => hasServerSession(),
     staleTime: 1000 * 60 * 5,
   });
-
-/**
- * Update the cached session value directly.
- *
- * @param queryClient The TanStack Query client instance.
- * @param value The authenticated state to store in the cache.
- */
-export const setSessionQueryValue = (queryClient: QueryClient, value: boolean) => {
-  queryClient.setQueryData<boolean>(sessionQueryKey, value);
-};

@@ -16,7 +16,7 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
 import { signIn } from '@/lib/auth/authActions';
-import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
+import { sessionQueryOptions } from '@/lib/auth/authQuery';
 import { showErrorNotification, showSuccessNotification } from '@/lib/notify';
 import { loginFormSchema, type LoginFormValues } from '@/lib/schemas';
 import { loginSearchSchema } from '@/lib/schemas/routes';
@@ -46,7 +46,13 @@ function LoginPage() {
     mutationFn: (values: LoginFormValues) => signIn(values),
     onSuccess: async () => {
       showSuccessNotification('Signed in', 'Welcome back!');
-      setSessionQueryValue(queryClient, true);
+      // Login beforeLoad caches `false` with a 5m staleTime. Without forcing a
+      // refetch here, _authenticated's ensureQueryData would reuse that value
+      // and redirect back to /login. staleTime: 0 applies only to this call.
+      await queryClient.fetchQuery({
+        ...sessionQueryOptions(),
+        staleTime: 0,
+      });
       navigate({ to: redirectTo ?? '/' });
     },
     onError: (error: Error) => {
