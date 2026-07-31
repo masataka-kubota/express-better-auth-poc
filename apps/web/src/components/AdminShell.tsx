@@ -10,14 +10,14 @@ import {
   Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient } from '@/lib/auth/authClient';
-import { setSessionQueryValue } from '@/lib/auth/authQuery';
+import { signOut } from '@/lib/auth/authActions';
+import { showErrorNotification, showSuccessNotification } from '@/lib/notify';
 
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard },
@@ -31,16 +31,17 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
   const [opened, { toggle }] = useDisclosure();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const handleSignOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: async () => {
-          setSessionQueryValue(queryClient, false);
-          await navigate({ to: '/login', search: { redirect: undefined } });
-        },
-      },
-    });
-  };
+  const mutation = useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
+      showSuccessNotification('Signed out', 'You have been signed out successfully.');
+      queryClient.clear();
+      navigate({ to: '/login', search: { redirect: undefined } });
+    },
+    onError: (error: Error) => {
+      showErrorNotification('Sign out failed', error.message);
+    },
+  });
 
   return (
     <AppShell
@@ -84,7 +85,7 @@ const AdminShell = ({ children }: { children: ReactNode }) => {
               variant="subtle"
               color="gray"
               leftSection={<LogOut size={16} />}
-              onClick={handleSignOut}
+              onClick={() => mutation.mutate()}
             >
               Log out
             </Button>

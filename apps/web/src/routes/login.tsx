@@ -11,14 +11,13 @@ import {
   Title,
 } from '@mantine/core';
 import { schemaResolver, useForm } from '@mantine/form';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
 
 import ColorSchemeToggle from '@/components/ColorSchemeToggle';
-import { authClient } from '@/lib/auth/authClient';
-import { getAuthErrorMessage } from '@/lib/auth/authErrors';
+import { signIn } from '@/lib/auth/authActions';
 import { sessionQueryOptions, setSessionQueryValue } from '@/lib/auth/authQuery';
+import { showErrorNotification, showSuccessNotification } from '@/lib/notify';
 import { loginFormSchema, type LoginFormValues } from '@/lib/schemas';
 import { loginSearchSchema } from '@/lib/schemas/routes';
 
@@ -36,9 +35,6 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const { redirect: redirectTo } = Route.useSearch();
 
   const form = useForm<LoginFormValues>({
@@ -46,29 +42,17 @@ function LoginPage() {
     validate: schemaResolver(loginFormSchema, { sync: true }),
   });
 
-  const handleSubmit = async (values: LoginFormValues): Promise<void> => {
-    await authClient.signIn.email(
-      {
-        email: values.email,
-        password: values.password,
-      },
-      {
-        onRequest: () => {
-          setError(null);
-          setIsSubmitting(true);
-        },
-        onSuccess: async () => {
-          setIsSubmitting(false);
-          setSessionQueryValue(queryClient, true);
-          await navigate({ to: redirectTo ?? '/' });
-        },
-        onError: (ctx) => {
-          setIsSubmitting(false);
-          setError(getAuthErrorMessage(ctx.error));
-        },
-      },
-    );
-  };
+  const mutation = useMutation({
+    mutationFn: (values: LoginFormValues) => signIn(values),
+    onSuccess: async () => {
+      showSuccessNotification('Signed in', 'Welcome back!');
+      setSessionQueryValue(queryClient, true);
+      navigate({ to: redirectTo ?? '/' });
+    },
+    onError: (error: Error) => {
+      showErrorNotification('Sign in failed', error.message);
+    },
+  });
 
   return (
     <Box
@@ -104,11 +88,11 @@ function LoginPage() {
           </Stack>
 
           <Paper withBorder p="xl" radius="md" style={{ width: '100%' }}>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
               <Stack gap="md">
-                {error ? (
+                {mutation.error ? (
                   <Alert color="red" title="Could not sign in">
-                    {error}
+                    {mutation.error.message}
                   </Alert>
                 ) : null}
 
@@ -124,7 +108,7 @@ function LoginPage() {
                   key={form.key('password')}
                   {...form.getInputProps('password')}
                 />
-                <Button type="submit" fullWidth loading={isSubmitting} color="gray">
+                <Button type="submit" fullWidth loading={mutation.isPending} color="gray">
                   Continue
                 </Button>
               </Stack>
