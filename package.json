@@ -1,7 +1,12 @@
 {
   "name": "express-better-auth-poc",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky"
+  },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.2.0"
+  }
 }

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -e
+
+. "$(dirname "$0")/lib/functions.sh"
+
+current_branch="$(git symbolic-ref --short HEAD)"
+base_branch="$(get_base_branch)"
+repo_root="$(git rev-parse --show-toplevel)"
+
+cd "$repo_root"
+
+if ! git diff --quiet "$base_branch" "$current_branch" -- apps/backend; then
+  (cd "$repo_root/apps/backend" && bun run type-check && bun run lint && bun run test)
+fi
+
+if ! git diff --quiet "$base_branch" "$current_branch" -- apps/web; then
+  (cd "$repo_root/apps/web" && bun run type-check && bun run lint && bun run test)
+fi

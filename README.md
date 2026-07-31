@@ -22,6 +22,12 @@ apps/
 
 ## Setup
 
+Install root dependencies first (Husky hooks are installed via the root `prepare` script):
+
+```bash
+bun install
+```
+
 ### Backend
 
 ```bash
