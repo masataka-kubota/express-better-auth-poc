@@ -47,7 +47,8 @@ export const NotFound = () => {
               fontSize: 'clamp(3rem, 10vw, 5rem)',
               fontWeight: 800,
               lineHeight: 1,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background:
+                'linear-gradient(135deg, var(--mantine-color-teal-4) 0%, var(--mantine-color-teal-8) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               marginBottom: '0.25rem',
