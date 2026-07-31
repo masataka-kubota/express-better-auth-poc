@@ -4,6 +4,7 @@
  */
 const SlothIllustration = () => (
   <svg
+    aria-hidden="true"
     viewBox="0 0 280 220"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
