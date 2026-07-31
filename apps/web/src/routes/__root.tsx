@@ -7,6 +7,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
+import { NotFound } from '@/components/NotFound';
 import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools';
 import { theme } from '@/theme';
 
@@ -17,6 +18,7 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  notFoundComponent: () => <NotFound />,
   head: () => ({
     meta: [
       {

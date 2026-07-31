@@ -1,4 +1,4 @@
-import { Avatar, Badge, Card, Stack, Table, Text, Title } from '@mantine/core';
+import { Avatar, Badge, Card, Group, Stack, Table, Text, Title } from '@mantine/core';
 import { Link, createFileRoute } from '@tanstack/react-router';
 
 import { demoUsers } from '@/lib/users';
@@ -37,14 +37,12 @@ function UsersPage() {
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       <Stack gap={2}>
-                        <Text
-                          size="sm"
-                          fw={600}
-                          style={{ display: 'flex', alignItems: 'center', gap: 10 }}
-                        >
+                        <Group gap="xs" align="center">
                           <Avatar name={user.name} color="initials" size={28} radius="xl" />
-                          {user.name}
-                        </Text>
+                          <Text size="sm" fw={600}>
+                            {user.name}
+                          </Text>
+                        </Group>
                         <Text size="xs" c="dimmed" pl={38}>
                           {user.email}
                         </Text>

@@ -1,0 +1,15 @@
+.sun {
+  display: block;
+
+  [data-mantine-color-scheme='dark'] & {
+    display: none;
+  }
+}
+
+.moon {
+  display: none;
+
+  [data-mantine-color-scheme='dark'] & {
+    display: block;
+  }
+}
