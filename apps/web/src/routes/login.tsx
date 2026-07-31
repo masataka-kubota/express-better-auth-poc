@@ -45,7 +45,6 @@ function LoginPage() {
   const mutation = useMutation({
     mutationFn: (values: LoginFormValues) => signIn(values),
     onSuccess: async () => {
-      showSuccessNotification('Signed in', 'Welcome back!');
       // Login beforeLoad caches `false` with a 5m staleTime. Without forcing a
       // refetch here, _authenticated's ensureQueryData would reuse that value
       // and redirect back to /login. staleTime: 0 applies only to this call.
@@ -53,7 +52,8 @@ function LoginPage() {
         ...sessionQueryOptions(),
         staleTime: 0,
       });
-      navigate({ to: redirectTo ?? '/' });
+      showSuccessNotification('Signed in', 'Welcome back!');
+      await navigate({ to: redirectTo ?? '/' });
     },
     onError: (error: Error) => {
       showErrorNotification('Sign in failed', error.message);
