@@ -1,22 +1,20 @@
-import { ActionIcon, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
+import { ActionIcon, useMantineColorScheme } from '@mantine/core';
 import { Moon, Sun } from 'lucide-react';
 
-const ColorSchemeToggle = () => {
-  const { setColorScheme } = useMantineColorScheme();
-  const computed = useComputedColorScheme('light', {
-    getInitialValueInEffect: true,
-  });
+import classes from './ColorSchemeToggle.module.css';
 
-  const next = computed === 'dark' ? 'light' : 'dark';
+const ColorSchemeToggle = () => {
+  const { toggleColorScheme } = useMantineColorScheme();
 
   return (
     <ActionIcon
       variant="subtle"
       size="lg"
-      aria-label={`Switch to ${next} mode`}
-      onClick={() => setColorScheme(next)}
+      aria-label="Switch color scheme"
+      onClick={toggleColorScheme}
     >
-      {computed === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+      <Sun size={18} className={classes.sun} />
+      <Moon size={18} className={classes.moon} />
     </ActionIcon>
   );
 };
