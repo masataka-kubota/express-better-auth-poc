@@ -1,4 +1,7 @@
+import type { BetterFetchError } from 'better-auth/react';
+
 import { authClient } from '@/lib/auth/authClient';
+import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 import type { LoginFormValues } from '@/lib/schemas';
 
 /**
@@ -10,7 +13,7 @@ import type { LoginFormValues } from '@/lib/schemas';
 export const signIn = async (values: LoginFormValues): Promise<void> => {
   const { error } = await authClient.signIn.email(values);
   if (error) {
-    throw new Error(error.message || 'Failed to sign in.');
+    throw new Error(getAuthErrorMessage(error as BetterFetchError));
   }
 };
 
@@ -22,6 +25,6 @@ export const signIn = async (values: LoginFormValues): Promise<void> => {
 export const signOut = async (): Promise<void> => {
   const { error } = await authClient.signOut();
   if (error) {
-    throw new Error(error.message || 'Failed to sign out.');
+    throw new Error(getAuthErrorMessage(error as BetterFetchError));
   }
 };
