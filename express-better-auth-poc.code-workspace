@@ -33,6 +33,14 @@
       "node_modules/@mantine/core/styles.css",
     ],
   },
+  "mcp": {
+    "servers": {
+      "better-auth-docs": {
+        "type": "sse",
+        "url": "https://mcp.better-auth.com/mcp"
+      }
+    }
+  },
   "extensions": {
     "recommendations": ["oxc.oxc-vscode", "vunguyentuan.vscode-css-variables"],
   },

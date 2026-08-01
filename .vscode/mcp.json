@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "better-auth-docs": {
+      "type": "sse",
+      "url": "https://mcp.better-auth.com/mcp"
+    }
+  }
+}
