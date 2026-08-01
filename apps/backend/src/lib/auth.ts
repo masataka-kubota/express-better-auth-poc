@@ -4,13 +4,36 @@ import { betterAuth } from 'better-auth';
 import { db } from '@/db';
 import { authSchema } from '@/db/schema';
 import { env } from '@/lib/env';
+import { sendEmail } from '@/lib/mail';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'mysql',
     schema: authSchema
   }),
-  emailAndPassword: { enabled: true },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendEmail({
+        to: user.email,
+        subject: 'Verify your email address',
+        html: `<p>Click <a href="${url}">here</a> to verify your email.</p>`,
+        text: `Click the link to verify your email: ${url}`
+      });
+    }
+  },
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      void sendEmail({
+        to: user.email,
+        subject: 'Reset your password',
+        html: `<p>Click <a href="${url}">here</a> to reset your password.</p>`,
+        text: `Click the link to reset your password: ${url}`
+      });
+    }
+  },
   baseUrl: env.betterAuthUrl,
   secret: env.betterAuthSecret,
   trustedOrigins: env.frontendUrls

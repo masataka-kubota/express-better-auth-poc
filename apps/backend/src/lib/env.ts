@@ -46,5 +46,17 @@ export const env = {
    * Used by Express CORS and Better Auth trusted origins.
    * Example (Vite): `http://localhost:5173,http://localhost:4173`
    */
-  frontendUrls: parseFrontendOrigins(requireEnv('FRONTEND_URLS'))
+  frontendUrls: parseFrontendOrigins(requireEnv('FRONTEND_URLS')),
+
+  /**
+   * Resend API key for sending emails in production.
+   * Not required in development (Mailpit is used instead).
+   */
+  resendApiKey: requireEnv('RESEND_API_KEY')
 } as const;
+
+/**
+ * Whether the app is running in development mode.
+ * Derived from `NODE_ENV`.
+ */
+export const isDev = process.env.NODE_ENV === 'development';
