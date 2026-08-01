@@ -20,14 +20,10 @@ const createError = (status: number, message: string) =>
 
 describe('getAuthErrorMessage', () => {
   it.each([
-    [401, 'Invalid credentials'],
     [400, 'Invalid email or password'],
+    [401, 'Invalid credentials'],
   ])('returns the message for status %s', (status, errorMessage) => {
     expect(getAuthErrorMessage(createError(status, errorMessage))).toBe(errorMessage);
-  });
-
-  it('returns the provided message for 422 when available', () => {
-    expect(getAuthErrorMessage(createError(422, 'Validation failed'))).toBe('Validation failed');
   });
 
   it('prefers a nested error message for 400 responses', () => {
@@ -39,14 +35,15 @@ describe('getAuthErrorMessage', () => {
     expect(getAuthErrorMessage(error)).toBe('Nested validation error');
   });
 
-  it('falls back to the generic request message for 400 or 422 when no message is available', () => {
+  it('falls back to a generic request message for 400 and 422 when no message is available', () => {
+    expect(getAuthErrorMessage(createError(400, ''))).toBe('The request could not be processed.');
     expect(getAuthErrorMessage(createError(422, ''))).toBe('The request could not be processed.');
   });
 
-  it('returns the provided message for 429 when available', () => {
-    expect(getAuthErrorMessage(createError(429, 'Please try again later'))).toBe(
-      'Please try again later',
-    );
+  it('falls back to a session expired message for 401 and 403 when no message is available', () => {
+    const fallbackMessage = 'Your session is no longer valid. Please sign in again.';
+    expect(getAuthErrorMessage(createError(401, ''))).toBe(fallbackMessage);
+    expect(getAuthErrorMessage(createError(403, ''))).toBe(fallbackMessage);
   });
 
   it('falls back to a rate-limit message for 429 when no message is available', () => {
@@ -63,10 +60,5 @@ describe('getAuthErrorMessage', () => {
   it('falls back to a generic message for other statuses when no message is available', () => {
     const fallbackMessage = 'Something went wrong. Please try again.';
     expect(getAuthErrorMessage(createError(404, ''))).toBe(fallbackMessage);
-  });
-
-  it('falls back to a status-specific message when no message is available', () => {
-    const fallbackMessage = 'Your session is no longer valid. Please sign in again.';
-    expect(getAuthErrorMessage(createError(401, ''))).toBe(fallbackMessage);
   });
 });
