@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import { cloudflare } from '@cloudflare/vite-plugin';
 import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
@@ -6,6 +8,12 @@ import { defineConfig } from 'vite';
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
+  test: {
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+    },
+  },
   plugins: [
     devtools(),
     !process.env.VITEST && cloudflare({ viteEnvironment: { name: 'ssr' } }),
