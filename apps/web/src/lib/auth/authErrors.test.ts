@@ -26,6 +26,45 @@ describe('getAuthErrorMessage', () => {
     expect(getAuthErrorMessage(createError(status, errorMessage))).toBe(errorMessage);
   });
 
+  it('returns the provided message for 422 when available', () => {
+    expect(getAuthErrorMessage(createError(422, 'Validation failed'))).toBe('Validation failed');
+  });
+
+  it('prefers a nested error message for 400 responses', () => {
+    const error = {
+      ...createError(400, 'Outer message'),
+      error: { message: 'Nested validation error' },
+    };
+
+    expect(getAuthErrorMessage(error)).toBe('Nested validation error');
+  });
+
+  it('falls back to the generic request message for 400 or 422 when no message is available', () => {
+    expect(getAuthErrorMessage(createError(422, ''))).toBe('The request could not be processed.');
+  });
+
+  it('returns the provided message for 429 when available', () => {
+    expect(getAuthErrorMessage(createError(429, 'Please try again later'))).toBe(
+      'Please try again later',
+    );
+  });
+
+  it('falls back to a rate-limit message for 429 when no message is available', () => {
+    const fallbackMessage = 'Too many requests. Please wait a moment and try again.';
+    expect(getAuthErrorMessage(createError(429, ''))).toBe(fallbackMessage);
+  });
+
+  it('returns a temporary server issue message for 500 regardless of the payload message', () => {
+    expect(getAuthErrorMessage(createError(500, 'Database unavailable'))).toBe(
+      'The server is experiencing a temporary issue. Please try again shortly.',
+    );
+  });
+
+  it('falls back to a generic message for other statuses when no message is available', () => {
+    const fallbackMessage = 'Something went wrong. Please try again.';
+    expect(getAuthErrorMessage(createError(404, ''))).toBe(fallbackMessage);
+  });
+
   it('falls back to a status-specific message when no message is available', () => {
     const fallbackMessage = 'Your session is no longer valid. Please sign in again.';
     expect(getAuthErrorMessage(createError(401, ''))).toBe(fallbackMessage);
