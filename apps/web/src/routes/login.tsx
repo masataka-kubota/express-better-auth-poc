@@ -1,20 +1,9 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Container,
-  Paper,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { Alert, Anchor, Button, Group, PasswordInput, Stack, Text, TextInput } from '@mantine/core';
 import { schemaResolver, useForm } from '@mantine/form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { Link, createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 
-import ColorSchemeToggle from '@/components/ColorSchemeToggle';
+import AuthPageLayout from '@/components/AuthPageLayout';
 import { signIn } from '@/lib/auth/authActions';
 import { sessionQueryOptions } from '@/lib/auth/authQuery';
 import { showErrorNotification, showSuccessNotification } from '@/lib/notify';
@@ -61,67 +50,49 @@ function LoginPage() {
   });
 
   return (
-    <Box
-      mih="100vh"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-      }}
+    <AuthPageLayout
+      title="Sign in to Console"
+      description="Sign in with the seeded Better Auth user to access the admin shell."
+      footerTo="/signup"
+      footerLabel="Create an account"
     >
-      {/* Color scheme toggle */}
-      <Box
-        style={{
-          position: 'absolute',
-          top: 'var(--mantine-spacing-md)',
-          right: 'var(--mantine-spacing-md)',
-        }}
-      >
-        <ColorSchemeToggle />
-      </Box>
+      <form onSubmit={form.onSubmit((values) => mutation.mutate(values))} noValidate>
+        <Stack gap="md">
+          {mutation.error ? (
+            <Alert color="red" title="Could not sign in">
+              {mutation.error.message}
+            </Alert>
+          ) : null}
 
-      {/* Login form */}
-      <Container size={420} px="md">
-        <Stack gap="lg" align="center">
-          <Stack gap={6} align="center">
-            <Title order={2} ta="center">
-              Sign in to Console
-            </Title>
-            <Text c="dimmed" size="sm" ta="center">
-              Sign in with the seeded Better Auth user to access the admin shell.
-            </Text>
+          <TextInput
+            label="Email"
+            placeholder="admin@example.com"
+            key={form.key('email')}
+            {...form.getInputProps('email')}
+          />
+
+          <Stack gap={6}>
+            <Group justify="space-between" align="center" wrap="nowrap" gap="xs">
+              <Text component="label" htmlFor="login-password" size="sm" fw={500}>
+                Password
+              </Text>
+              <Anchor component={Link} to="/forgot-password" size="sm" style={{ flexShrink: 0 }}>
+                Forgot password?
+              </Anchor>
+            </Group>
+            <PasswordInput
+              id="login-password"
+              placeholder="Your password"
+              key={form.key('password')}
+              {...form.getInputProps('password')}
+            />
           </Stack>
 
-          <Paper withBorder p="xl" radius="md" style={{ width: '100%' }}>
-            <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
-              <Stack gap="md">
-                {mutation.error ? (
-                  <Alert color="red" title="Could not sign in">
-                    {mutation.error.message}
-                  </Alert>
-                ) : null}
-
-                <TextInput
-                  label="Email"
-                  placeholder="admin@example.com"
-                  key={form.key('email')}
-                  {...form.getInputProps('email')}
-                />
-                <PasswordInput
-                  label="Password"
-                  placeholder="Your password"
-                  key={form.key('password')}
-                  {...form.getInputProps('password')}
-                />
-                <Button type="submit" fullWidth loading={mutation.isPending} color="gray">
-                  Continue
-                </Button>
-              </Stack>
-            </form>
-          </Paper>
+          <Button type="submit" fullWidth loading={mutation.isPending} color="gray">
+            Continue
+          </Button>
         </Stack>
-      </Container>
-    </Box>
+      </form>
+    </AuthPageLayout>
   );
 }
