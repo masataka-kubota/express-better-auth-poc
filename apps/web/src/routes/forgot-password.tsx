@@ -11,8 +11,8 @@ import { forgotPasswordFormSchema, type ForgotPasswordFormValues } from '@/lib/s
 
 export const Route = createFileRoute('/forgot-password')({
   beforeLoad: async ({ context }) => {
-    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
-    if (isAuthenticated) {
+    const session = await context.queryClient.ensureQueryData(sessionQueryOptions());
+    if (session) {
       throw redirect({ to: '/' });
     }
   },

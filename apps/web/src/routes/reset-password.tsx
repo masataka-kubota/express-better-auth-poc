@@ -13,8 +13,8 @@ import { resetPasswordSearchSchema } from '@/lib/schemas/routes';
 export const Route = createFileRoute('/reset-password')({
   validateSearch: (search) => resetPasswordSearchSchema.parse(search),
   beforeLoad: async ({ context }) => {
-    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
-    if (isAuthenticated) {
+    const session = await context.queryClient.ensureQueryData(sessionQueryOptions());
+    if (session) {
       throw redirect({ to: '/' });
     }
   },

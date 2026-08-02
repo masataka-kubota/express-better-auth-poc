@@ -11,8 +11,8 @@ import { signupFormSchema, type SignupFormValues } from '@/lib/schemas';
 
 export const Route = createFileRoute('/signup')({
   beforeLoad: async ({ context }) => {
-    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
-    if (isAuthenticated) {
+    const session = await context.queryClient.ensureQueryData(sessionQueryOptions());
+    if (session) {
       throw redirect({ to: '/' });
     }
   },

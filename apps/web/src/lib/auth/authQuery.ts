@@ -1,15 +1,17 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { hasServerSession } from '@/lib/auth/authSession.functions';
+import { getServerSession } from '@/lib/auth/authSession.functions';
 
 const sessionQueryKey = ['session'] as const;
 
 /**
- * Create TanStack Query options for the authenticated session state.
+ * Create TanStack Query options for the authenticated session.
+ *
+ * Resolves to the current user, or `null` when there is no valid session.
  */
 export const sessionQueryOptions = () =>
   queryOptions({
     queryKey: sessionQueryKey,
-    queryFn: () => hasServerSession(),
+    queryFn: () => getServerSession(),
     staleTime: 1000 * 60 * 5,
   });

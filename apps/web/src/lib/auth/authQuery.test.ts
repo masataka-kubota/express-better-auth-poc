@@ -1,25 +1,33 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sessionQueryOptions } from '@/lib/auth/authQuery';
-import { hasServerSession } from '@/lib/auth/authSession.functions';
+import { getServerSession } from '@/lib/auth/authSession.functions';
+import type { SessionUser } from '@/lib/auth/authSession.server';
 
 vi.mock('@/lib/auth/authSession.functions', () => ({
-  hasServerSession: vi.fn(),
+  getServerSession: vi.fn(),
 }));
 
 describe('sessionQueryOptions', () => {
+  const user: SessionUser = {
+    id: '1',
+    name: 'Test User',
+    email: 'test@example.com',
+    emailVerified: true,
+  };
+
   beforeEach(() => {
-    vi.mocked(hasServerSession).mockReset();
+    vi.mocked(getServerSession).mockReset();
   });
 
-  it('uses the shared session query key and delegates to hasServerSession', async () => {
-    vi.mocked(hasServerSession).mockResolvedValueOnce(true);
+  it('uses the shared session query key and delegates to getServerSession', async () => {
+    vi.mocked(getServerSession).mockResolvedValueOnce(user);
 
     const options = sessionQueryOptions();
     const result = await options.queryFn?.({ queryKey: options.queryKey } as never);
 
     expect(options.queryKey).toEqual(['session']);
-    expect(result).toBe(true);
-    expect(hasServerSession).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(user);
+    expect(getServerSession).toHaveBeenCalledTimes(1);
   });
 });

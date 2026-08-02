@@ -2,16 +2,29 @@ import { getRequestHeaders } from '@tanstack/react-start/server';
 
 import { env } from '@/lib/env';
 
+/**
+ * The authenticated user resolved from the current server session.
+ */
+export interface SessionUser {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image?: string | null;
+}
+
 interface ServerSessionPayload {
-  user?: Record<string, unknown> | null;
+  user?: SessionUser | null;
 }
 
 /**
  * Resolve the current user's session from the incoming server request.
  *
  * This is the server-only implementation used by the SSR guard.
+ *
+ * @returns The authenticated user, or `null` when there is no valid session.
  */
-export const verifyServerSession = async (): Promise<boolean> => {
+export const verifyServerSession = async (): Promise<SessionUser | null> => {
   try {
     const headers = getRequestHeaders();
     const cookie = headers.get('cookie') ?? '';
@@ -25,12 +38,12 @@ export const verifyServerSession = async (): Promise<boolean> => {
     });
 
     if (!response.ok) {
-      return false;
+      return null;
     }
 
     const data = (await response.json()) as ServerSessionPayload | null;
-    return Boolean(data?.user);
+    return data?.user ?? null;
   } catch {
-    return false;
+    return null;
   }
 };
