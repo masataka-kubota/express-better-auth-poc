@@ -78,6 +78,12 @@ function ResetPasswordPage() {
             key={form.key('newPassword')}
             {...form.getInputProps('newPassword')}
           />
+          <PasswordInput
+            label="Confirm new password"
+            placeholder="Confirm new password"
+            key={form.key('confirmPassword')}
+            {...form.getInputProps('confirmPassword')}
+          />
           <Button type="submit" fullWidth loading={mutation.isPending} color="gray">
             Update password
           </Button>

@@ -79,13 +79,30 @@ describe('forgotPasswordFormSchema', () => {
 });
 
 describe('resetPasswordFormSchema', () => {
-  it('accepts a non-empty new password', () => {
-    const result = resetPasswordFormSchema.safeParse({ newPassword: 'password123' });
+  it('accepts a non-empty new password that matches the confirmation', () => {
+    const result = resetPasswordFormSchema.safeParse({
+      newPassword: 'password123',
+      confirmPassword: 'password123',
+    });
     expect(result.success).toBe(true);
   });
 
   it('rejects an empty new password', () => {
-    const result = resetPasswordFormSchema.safeParse({ newPassword: '' });
+    const result = resetPasswordFormSchema.safeParse({
+      newPassword: '',
+      confirmPassword: 'password123',
+    });
     expect(result.success).toBe(false);
+  });
+
+  it('rejects mismatched passwords', () => {
+    const result = resetPasswordFormSchema.safeParse({
+      newPassword: 'password123',
+      confirmPassword: 'different123',
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.path).toEqual(['confirmPassword']);
+    }
   });
 });

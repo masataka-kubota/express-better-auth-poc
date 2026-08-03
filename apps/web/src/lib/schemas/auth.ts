@@ -29,9 +29,15 @@ export const forgotPasswordFormSchema = z.object({
 /**
  * Schema for the reset password form.
  */
-export const resetPasswordFormSchema = z.object({
-  newPassword: passwordSchema,
-});
+export const resetPasswordFormSchema = z
+  .object({
+    newPassword: passwordSchema,
+    confirmPassword: passwordSchema,
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 /**
  * Infer the shape of the login form values from {@link loginFormSchema}.
