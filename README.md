@@ -1,91 +1,126 @@
 # express-better-auth-poc
 
-A proof-of-concept (PoC) and boilerplate repository for implementing and validating authentication using Express, Better Auth, and Drizzle ORM (MySQL).
+A proof-of-concept repository for evaluating an authentication stack built with Express, Better Auth, Drizzle ORM, and TanStack Start.
 
-## Tech Stack
+## What this POC demonstrates
 
-- **Runtime / Package Manager**: Bun
-- **Backend Framework**: Express (TypeScript) — `apps/backend`
-- **Frontend**: TanStack Start (React + TanStack Router) — `apps/web`
-- **UI**: Mantine — `apps/web`
-- **Authentication**: Better Auth
-- **ORM**: Drizzle ORM
-- **Database**: MySQL 8.4 (Docker Compose)
+- An Express backend with Better Auth email/password authentication
+- Email verification and password reset flows
+- A TanStack Start frontend that uses cookies and the Better Auth client
+- MySQL-backed persistence via Docker Compose
 
-## Layout
+## Tech stack
 
-```txt
-apps/
-  backend/   # Express + Better Auth
-  web/       # TanStack Start + Mantine
-```
+- Runtime / package manager: Bun
+- Backend: Express + TypeScript in apps/backend
+- Frontend: TanStack Start + React + Mantine in apps/web
+- Authentication: Better Auth
+- ORM: Drizzle ORM
+- Database: MySQL 8.4
 
-## Setup
+## Prerequisites
 
-Install root dependencies first (Husky hooks are installed via the root `prepare` script):
+- Bun 1.3+
+- Docker Desktop
+- Optional: Mailpit for local email testing
+
+## 1. Install dependencies
+
+Install the root dependencies first:
 
 ```bash
 bun install
 ```
 
-### Backend
+## 2. Backend setup
+
+From the backend app directory:
 
 ```bash
 cd apps/backend
 bun install
 cp .env.example .env
-# Fill in DATABASE_URL, BETTER_AUTH_SECRET, etc.
 ```
 
-### Web
+Update the backend `.env` file with the required values:
+
+- `DATABASE_URL`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
+- `FRONTEND_URLS`
+- `SMTP_FROM`
+
+For local development, Mailpit is expected on `localhost:1025` and the UI is usually available at `http://localhost:8025`.
+
+Start MySQL:
+
+```bash
+docker compose up -d
+```
+
+Run the database migrations and seed a test user:
+
+```bash
+bun run db:migrate
+bun run db:seed
+```
+
+The seed script creates a user with:
+
+- Email: `test@example.com`
+- Password: `secure_password_123`
+
+Start the backend:
+
+```bash
+bun run dev
+```
+
+The backend API will run on `http://localhost:3000`.
+
+## 3. Frontend setup
+
+From the web app directory:
 
 ```bash
 cd apps/web
 bun install
+cp .env.example .env
 ```
 
-## Run
+The web app expects:
 
-### Backend
+- `VITE_BACKEND_BASE_URL=http://localhost:3000`
+
+Start the frontend:
 
 ```bash
-cd apps/backend
 bun run dev
 ```
 
-### Web
+Open `http://localhost:5173` and use the auth flows from the UI.
 
-```bash
-cd apps/web
-bun run dev
-```
+## 4. Auth flow notes
 
-Open `http://localhost:5173/login` (the backend remains on port `3000`).
+The current POC uses Better Auth email/password authentication with:
 
-Demo credentials (temporary auth, not Better Auth yet):
+- sign up
+- email verification
+- sign in
+- password reset
 
-- Email: `admin@example.com`
-- Password: `password`
+For local email testing, either use Mailpit or configure a real SMTP/Resend provider.
 
-## Docker for MySQL
+## Useful backend scripts
 
 From `apps/backend`:
 
 ```bash
-docker compose up -d
-docker compose down
-docker compose ps
-```
-
-## Database scripts
-
-From `apps/backend`:
-
-```bash
+bun run test
 bun run db:generate
 bun run db:migrate
 bun run db:seed
 bun run db:studio
 ```
 
-This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+This repository is intended as a working proof-of-concept and reference implementation rather than a production-ready application.
