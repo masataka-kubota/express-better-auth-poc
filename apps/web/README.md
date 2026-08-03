@@ -17,10 +17,28 @@ From the app directory:
 ```bash
 cd apps/web
 bun install
+cp .env.example .env
 bun run dev
 ```
 
+Set the backend URL in `.env`:
+
+```dotenv
+VITE_BACKEND_BASE_URL=http://localhost:3000
+```
+
 The dev server runs at `http://localhost:5173`.
+
+## Auth flows
+
+The app currently supports:
+
+- sign up
+- sign in
+- password reset
+- email verification
+
+The backend must be running for these flows to work.
 
 ## Common scripts
 
