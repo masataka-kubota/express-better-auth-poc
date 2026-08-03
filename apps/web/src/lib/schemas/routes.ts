@@ -29,3 +29,15 @@ export const loginSearchSchema = z.object({
  * Infer the shape of the login route search parameters from {@link loginSearchSchema}.
  */
 export type LoginSearchValues = z.infer<typeof loginSearchSchema>;
+
+/**
+ * Schema for the reset password route search parameters.
+ */
+export const resetPasswordSearchSchema = z.object({
+  token: z.string().default(''),
+});
+
+/**
+ * Infer the shape of the reset password route search parameters from {@link resetPasswordSearchSchema}.
+ */
+export type ResetPasswordSearchValues = z.infer<typeof resetPasswordSearchSchema>;

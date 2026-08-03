@@ -1,7 +1,7 @@
 import { getRequestHeaders } from '@tanstack/react-start/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { verifyServerSession } from '@/lib/auth/authSession.server';
+import { verifyServerSession, type SessionUser } from '@/lib/auth/authSession.server';
 
 vi.mock('@/lib/env', () => ({
   env: {
@@ -15,6 +15,12 @@ vi.mock('@tanstack/react-start/server', () => ({
 
 describe('verifyServerSession', () => {
   const originalFetch = globalThis.fetch;
+  const user: SessionUser = {
+    id: '1',
+    name: 'Test User',
+    email: 'test@example.com',
+    emailVerified: true,
+  };
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
@@ -27,37 +33,37 @@ describe('verifyServerSession', () => {
     } as ReturnType<typeof getRequestHeaders>);
   };
 
-  it('returns true when the session response contains a user', async () => {
+  it('returns the user when the session response contains a user', async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ user: { id: '1' } }),
+      json: async () => ({ user }),
     });
     mockHeaders('session=abc');
 
-    await expect(verifyServerSession()).resolves.toBe(true);
+    await expect(verifyServerSession()).resolves.toEqual(user);
   });
 
-  it('returns false when the session response does not contain a user', async () => {
+  it('returns null when the session response does not contain a user', async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: async () => ({ user: null }),
     });
     mockHeaders('session=abc');
 
-    await expect(verifyServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBeNull();
   });
 
-  it('returns false when the session response is null', async () => {
+  it('returns null when the session response is null', async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: async () => null,
     });
     mockHeaders('session=abc');
 
-    await expect(verifyServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBeNull();
   });
 
-  it('returns false when the backend response is not ok', async () => {
+  it('returns null when the backend response is not ok', async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: false,
       status: 401,
@@ -65,20 +71,20 @@ describe('verifyServerSession', () => {
     });
     mockHeaders('session=expired');
 
-    await expect(verifyServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBeNull();
   });
 
-  it('returns false when the backend request fails', async () => {
+  it('returns null when the backend request fails', async () => {
     globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('ECONNREFUSED'));
     mockHeaders('session=abc');
 
-    await expect(verifyServerSession()).resolves.toBe(false);
+    await expect(verifyServerSession()).resolves.toBeNull();
   });
 
   it('passes the cookie header to the backend request', async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ user: { id: '1' } }),
+      json: async () => ({ user }),
     });
     globalThis.fetch = fetchMock;
     mockHeaders('my-session=xyz');

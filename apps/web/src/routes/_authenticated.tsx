@@ -5,16 +5,16 @@ import { sessionQueryOptions } from '@/lib/auth/authQuery';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
-    const isAuthenticated = await context.queryClient.ensureQueryData(sessionQueryOptions());
+    const session = await context.queryClient.ensureQueryData(sessionQueryOptions());
 
-    if (!isAuthenticated) {
+    if (!session) {
       throw redirect({
         to: '/login',
         search: { redirect: location.href },
       });
     }
 
-    return { isAuthenticated };
+    return { session };
   },
   component: AuthenticatedLayout,
 });

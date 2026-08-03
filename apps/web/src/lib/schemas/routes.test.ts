@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { loginSearchSchema, redirectSchema } from './index';
+import { loginSearchSchema, redirectSchema, resetPasswordSearchSchema } from './index';
 
 describe('redirectSchema', () => {
   it('returns undefined for an empty value', () => {
@@ -65,6 +65,24 @@ describe('loginSearchSchema', () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.redirect).toBeUndefined();
+    }
+  });
+});
+
+describe('resetPasswordSearchSchema', () => {
+  it('defaults token to an empty string when not provided', () => {
+    const result = resetPasswordSearchSchema.safeParse({});
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.token).toBe('');
+    }
+  });
+
+  it('passes through a valid token', () => {
+    const result = resetPasswordSearchSchema.safeParse({ token: 'reset-token-123' });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.token).toBe('reset-token-123');
     }
   });
 });

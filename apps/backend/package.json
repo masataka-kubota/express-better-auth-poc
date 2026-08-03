@@ -4,7 +4,7 @@
   "type": "module",
   "main": "./src/app.ts",
   "scripts": {
-    "dev": "bun --hot src/app.ts",
+    "dev": "NODE_ENV=development bun --hot src/app.ts",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -24,15 +24,18 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^1.0.0-rc.4",
     "express": "^5.2.1",
-    "mysql2": "^3.22.6"
+    "mysql2": "^3.22.6",
+    "resend": "^6.18.1"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
+    "@types/nodemailer": "^8.0.1",
     "@vitest/coverage-v8": "4.1.10",
     "drizzle-kit": "^1.0.0-rc.4",
+    "nodemailer": "^9.0.3",
     "oxfmt": "^0.58.0",
     "oxlint": "^1.73.0",
     "tsx": "^4.23.1",

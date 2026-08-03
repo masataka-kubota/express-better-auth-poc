@@ -1,11 +1,21 @@
+// @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { signIn, signOut } from '@/lib/auth/authActions';
+import { forgotPassword, resetPassword, signIn, signOut, signUp } from '@/lib/auth/authActions';
 import { getAuthErrorMessage } from '@/lib/auth/authErrors';
 
-const { mockSignInEmail, mockSignOut } = vi.hoisted(() => ({
+const {
+  mockSignInEmail,
+  mockSignUpEmail,
+  mockSignOut,
+  mockRequestPasswordReset,
+  mockResetPassword,
+} = vi.hoisted(() => ({
   mockSignInEmail: vi.fn(),
+  mockSignUpEmail: vi.fn(),
   mockSignOut: vi.fn(),
+  mockRequestPasswordReset: vi.fn(),
+  mockResetPassword: vi.fn(),
 }));
 
 vi.mock('@/lib/auth/authClient', () => ({
@@ -13,7 +23,12 @@ vi.mock('@/lib/auth/authClient', () => ({
     signIn: {
       email: mockSignInEmail,
     },
+    signUp: {
+      email: mockSignUpEmail,
+    },
     signOut: mockSignOut,
+    requestPasswordReset: mockRequestPasswordReset,
+    resetPassword: mockResetPassword,
   },
 }));
 
@@ -62,5 +77,69 @@ describe('auth actions', () => {
 
     await expect(signOut()).resolves.toBeUndefined();
     expect(mockSignOut).toHaveBeenCalled();
+  });
+
+  it('signUp passes values and a login callback URL', async () => {
+    mockSignUpEmail.mockResolvedValue({ error: null });
+
+    await expect(
+      signUp({ name: 'Test User', email: 'user@example.com', password: 'password' }),
+    ).resolves.toBeUndefined();
+    expect(mockSignUpEmail).toHaveBeenCalledWith({
+      name: 'Test User',
+      email: 'user@example.com',
+      password: 'password',
+      callbackURL: `${window.location.origin}/login`,
+    });
+  });
+
+  it('signUp throws a mapped error when Better Auth returns an error', async () => {
+    const authError = { message: 'Sign up failed' };
+    mockSignUpEmail.mockResolvedValue({ error: authError });
+
+    await expect(
+      signUp({ name: 'Test User', email: 'user@example.com', password: 'password' }),
+    ).rejects.toThrow('Mapped auth error');
+    expect(getAuthErrorMessage).toHaveBeenCalledWith(authError);
+  });
+
+  it('forgotPassword requests a reset with a reset-password redirect', async () => {
+    mockRequestPasswordReset.mockResolvedValue({ error: null });
+
+    await expect(forgotPassword('user@example.com')).resolves.toBeUndefined();
+    expect(mockRequestPasswordReset).toHaveBeenCalledWith({
+      email: 'user@example.com',
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+  });
+
+  it('forgotPassword throws a mapped error when Better Auth returns an error', async () => {
+    const authError = { message: 'Reset request failed' };
+    mockRequestPasswordReset.mockResolvedValue({ error: authError });
+
+    await expect(forgotPassword('user@example.com')).rejects.toThrow('Mapped auth error');
+    expect(getAuthErrorMessage).toHaveBeenCalledWith(authError);
+  });
+
+  it('resetPassword passes the token and new password', async () => {
+    mockResetPassword.mockResolvedValue({ error: null });
+
+    await expect(
+      resetPassword({ token: 'reset-token', newPassword: 'new-password' }),
+    ).resolves.toBeUndefined();
+    expect(mockResetPassword).toHaveBeenCalledWith({
+      token: 'reset-token',
+      newPassword: 'new-password',
+    });
+  });
+
+  it('resetPassword throws a mapped error when Better Auth returns an error', async () => {
+    const authError = { message: 'Reset failed' };
+    mockResetPassword.mockResolvedValue({ error: authError });
+
+    await expect(
+      resetPassword({ token: 'reset-token', newPassword: 'new-password' }),
+    ).rejects.toThrow('Mapped auth error');
+    expect(getAuthErrorMessage).toHaveBeenCalledWith(authError);
   });
 });
