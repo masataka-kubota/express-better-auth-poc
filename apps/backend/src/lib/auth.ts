@@ -20,6 +20,8 @@ export const auth = betterAuth({
         subject: 'Verify your email address',
         html: `<p>Click <a href="${url}">here</a> to verify your email.</p>`,
         text: `Click the link to verify your email: ${url}`
+      }).catch((error) => {
+        console.error('❌ Failed to send verification email', error);
       });
     }
   },
@@ -32,6 +34,8 @@ export const auth = betterAuth({
         subject: 'Reset your password',
         html: `<p>Click <a href="${url}">here</a> to reset your password.</p>`,
         text: `Click the link to reset your password: ${url}`
+      }).catch((error) => {
+        console.error('❌ Failed to send password reset email', error);
       });
     }
   },
