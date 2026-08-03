@@ -19,7 +19,7 @@ vi.mock('resend', () => ({
 const loadMail = async () => {
   vi.resetModules();
   vi.doMock('@/lib/env', () => ({
-    env: { resendApiKey: 'test-key' },
+    env: { resendApiKey: 'test-key', smtpFrom: 'noreply@localhost' },
     isDev: state.isDev
   }));
   return import('@/lib/mail');
@@ -127,7 +127,7 @@ describe('sendEmail', () => {
     state.isDev = false;
     vi.resetModules();
     vi.doMock('@/lib/env', () => ({
-      env: { resendApiKey: undefined },
+      env: { resendApiKey: undefined, smtpFrom: 'noreply@localhost' },
       isDev: state.isDev
     }));
     const { sendEmail: sendEmailProd } = await import('@/lib/mail');

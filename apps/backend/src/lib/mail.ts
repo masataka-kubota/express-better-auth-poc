@@ -34,7 +34,7 @@ export const sendEmail = async ({ to, subject, html, text }: SendEmailOptions) =
       secure: false
     });
     await transporter.sendMail({
-      from: 'Better Auth <noreply@localhost>',
+      from: `Better Auth <${env.smtpFrom}>`,
       to,
       subject,
       html,
@@ -50,7 +50,7 @@ export const sendEmail = async ({ to, subject, html, text }: SendEmailOptions) =
 
     const resend = new Resend(env.resendApiKey);
     await resend.emails.send({
-      from: 'Better Auth <noreply@localhost>',
+      from: `Better Auth <${env.smtpFrom}>`,
       to,
       subject,
       ...(html ? { html } : {}),

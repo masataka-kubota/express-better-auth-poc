@@ -52,7 +52,13 @@ export const env = {
    * Resend API key for sending emails in production.
    * Not required in development (Mailpit is used instead).
    */
-  resendApiKey: process.env.RESEND_API_KEY?.trim() || undefined
+  resendApiKey: process.env.RESEND_API_KEY?.trim() || undefined,
+
+  /**
+   * Sender email address used in the `from` field of outgoing emails.
+   * Example: `noreply@yourdomain.com`
+   */
+  smtpFrom: requireEnv('SMTP_FROM')
 } as const;
 
 /**
