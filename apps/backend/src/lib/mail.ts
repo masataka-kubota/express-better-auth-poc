@@ -42,6 +42,12 @@ export const sendEmail = async ({ to, subject, html, text }: SendEmailOptions) =
     });
   } else {
     // In production, send email using Resend API
+    if (!env.resendApiKey) {
+      throw new Error(
+        '❌ RESEND_API_KEY is required in production.Please set the RESEND_API_KEY environment variable.'
+      );
+    }
+
     const resend = new Resend(env.resendApiKey);
     await resend.emails.send({
       from: 'Better Auth <noreply@localhost>',

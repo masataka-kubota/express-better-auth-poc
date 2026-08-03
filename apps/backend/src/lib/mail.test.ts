@@ -123,6 +123,20 @@ describe('sendEmail', () => {
     });
   });
 
+  it('throws in production mode when the Resend API key is missing', async () => {
+    state.isDev = false;
+    vi.resetModules();
+    vi.doMock('@/lib/env', () => ({
+      env: { resendApiKey: undefined },
+      isDev: state.isDev
+    }));
+    const { sendEmail: sendEmailProd } = await import('@/lib/mail');
+
+    await expect(
+      sendEmailProd({ to: 'user@example.com', subject: 'Hi', html: '<p>Hello</p>' })
+    ).rejects.toThrow('RESEND_API_KEY is required in production');
+  });
+
   it('omits empty html and text fields in production mode', async () => {
     state.isDev = false;
     const { sendEmail: sendEmailProd } = await loadMail();
