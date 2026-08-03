@@ -44,6 +44,21 @@ function ResetPasswordPage() {
     },
   });
 
+  if (!token) {
+    return (
+      <AuthPageLayout
+        title="Reset your password"
+        description="Enter a new password for your account."
+        footerTo="/forgot-password"
+        footerLabel="Request a new reset link"
+      >
+        <Alert color="red" title="Invalid reset link">
+          This reset link is invalid or has expired. Please request a new password reset email.
+        </Alert>
+      </AuthPageLayout>
+    );
+  }
+
   return (
     <AuthPageLayout
       title="Reset your password"
