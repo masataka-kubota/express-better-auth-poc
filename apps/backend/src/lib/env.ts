@@ -58,7 +58,13 @@ export const env = {
    * Sender email address used in the `from` field of outgoing emails.
    * Example: `noreply@yourdomain.com`
    */
-  smtpFrom: requireEnv('SMTP_FROM')
+  smtpFrom: requireEnv('SMTP_FROM'),
+
+  /**
+   * Port used by the HTTP server.
+   * Cloud Run and local development both use this value.
+   */
+  port: Number(process.env.PORT ?? 3000)
 } as const;
 
 /**
