@@ -1,14 +1,13 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
-import { parsePositiveIntegerEnv, requireEnv } from './env';
+let requireEnv!: (name: string) => string;
+let parsePositiveIntegerEnv!: (name: string, fallback?: number) => number;
+
+beforeAll(async () => {
+  ({ parsePositiveIntegerEnv, requireEnv } = await import('./env'));
+});
 
 describe('requireEnv', () => {
-  const originalEnv = { ...process.env };
-
-  afterEach(() => {
-    process.env = originalEnv;
-  });
-
   it('returns a trimmed value when the variable is present', () => {
     process.env.TEST_VALUE = '  hello world  ';
 
@@ -27,12 +26,6 @@ describe('requireEnv', () => {
 });
 
 describe('parsePositiveIntegerEnv', () => {
-  const originalEnv = { ...process.env };
-
-  afterEach(() => {
-    process.env = originalEnv;
-  });
-
   it('uses the default port when PORT is not set', () => {
     delete process.env.PORT;
 
