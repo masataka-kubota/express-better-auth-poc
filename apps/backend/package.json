@@ -4,8 +4,11 @@
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "NODE_ENV=development bun --hot src/index.ts",
+    "dev": "bun --hot src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun --format esm",
+    "container:build": "docker build -t backend:local .",
+    "container:run": "if [ -f .env ]; then docker rm -f backend-local >/dev/null 2>&1 || true; docker run --rm --name backend-local -p 3000:3000 --env-file .env backend:local; else echo 'Create .env from .env.example first.'; exit 1; fi",
+    "container:stop": "docker rm -f backend-local >/dev/null 2>&1 || true",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

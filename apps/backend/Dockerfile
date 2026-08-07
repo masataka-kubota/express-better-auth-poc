@@ -12,7 +12,5 @@ RUN bun run build
 # Stage 2: Runtime — minimal image with only the bundled output
 FROM oven/bun:1
 WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=8080
 COPY --from=build /app/dist ./dist
 CMD ["bun", "./dist/index.js"]
