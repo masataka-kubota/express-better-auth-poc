@@ -35,6 +35,17 @@ jobs:
       - name: ☁️ Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
 
+      - name: 🏗 Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 #v2.2.0
+
+      - name: 📦 Install backend dependencies
+        working-directory: apps/backend
+        run: bun install --frozen-lockfile
+
+      - name: ✅ Verify backend
+        working-directory: apps/backend
+        run: bun run type-check && bun run test
+
       - name: 🐳 Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
