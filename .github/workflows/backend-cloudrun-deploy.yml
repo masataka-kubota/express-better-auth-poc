@@ -2,15 +2,12 @@ name: Deploy backend to Cloud Run
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Deployment environment"
-        required: false
-        default: "dev"
-        type: choice
-        options:
-          - dev
-          - prod
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/backend/**"
+      - ".github/workflows/backend-cloudrun-deploy.yml"
 
 permissions:
   contents: read
