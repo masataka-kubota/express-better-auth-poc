@@ -50,13 +50,15 @@ Update the backend `.env` file with the required values:
 - `FRONTEND_URLS`
 - `SMTP_FROM`
 
-For local development, Mailpit is expected on `localhost:1025` and the UI is usually available at `http://localhost:8025`.
-
-Start MySQL:
+The local development flow is Docker Compose-based. Start the backend stack and its dependencies:
 
 ```bash
-docker compose up -d
+cd apps/backend
+bun install
+docker compose up -d --build
 ```
+
+The backend API will be available at `http://localhost:3000`, MySQL at `localhost:3307`, and Mailpit at `http://localhost:8025`.
 
 Run the database migrations and seed a test user:
 
@@ -70,13 +72,11 @@ The seed script creates a user with:
 - Email: `test@example.com`
 - Password: `secure_password_123`
 
-Start the backend:
+To stop the stack later:
 
 ```bash
-bun run dev
+docker compose down
 ```
-
-The backend API will run on `http://localhost:3000`.
 
 ## 3. Frontend setup
 
@@ -116,6 +116,7 @@ For local email testing, either use Mailpit or configure a real SMTP/Resend prov
 From `apps/backend`:
 
 ```bash
+bun run build
 bun run test
 bun run db:generate
 bun run db:migrate
