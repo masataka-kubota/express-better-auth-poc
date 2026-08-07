@@ -20,6 +20,20 @@ For local verification, prepare the environment file first:
 cp .env.example .env
 ```
 
+If you run the backend directly on the host with `bun run dev`, keep the local MySQL host in `.env`:
+
+```env
+DATABASE_URL=mysql://app_user:app_password@127.0.0.1:3307/my_app_db
+```
+
+If you run the backend inside a Docker container with `bun run container:run`, switch to the Docker host alias instead:
+
+```env
+DATABASE_URL=mysql://app_user:app_password@host.docker.internal:3307/my_app_db
+```
+
+This is needed on macOS/Windows Docker Desktop because a container cannot reach the host's `127.0.0.1` directly.
+
 Then start the local MySQL dependency if you need the app to reach the database:
 
 ```bash
