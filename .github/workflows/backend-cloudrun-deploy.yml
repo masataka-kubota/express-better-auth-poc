@@ -8,7 +8,6 @@ on:
       - feat/backend/25-deploy-backend-aws-lambda
     paths:
       - "apps/backend/**"
-      - ".github/workflows/backend-cloudrun-deploy.yml"
 
 permissions:
   contents: read
