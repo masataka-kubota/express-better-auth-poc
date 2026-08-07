@@ -1,20 +1,5 @@
 name: express-better-auth-poc
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: backend:local
-    container_name: backend-local
-    depends_on:
-      - mysql
-    ports:
-      - '3000:3000'
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: mysql://app_user:app_password@mysql:3306/my_app_db
-
   mysql:
     image: mysql:8.4
     container_name: express-better-auth-db
