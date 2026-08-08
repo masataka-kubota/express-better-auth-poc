@@ -9,6 +9,18 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always"
   },
+  "[yaml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[yml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[dockercompose]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
   "cSpell.userWords": ["oxlint", "oxfmt"],
   "cssVariables.lookupFiles": [
     "**/*.css",
