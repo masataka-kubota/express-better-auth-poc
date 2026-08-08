@@ -22,6 +22,8 @@ bun install
 cp .env.example .env
 ```
 
+`PORT` is optional. If you do not set it, the backend uses `3000` by default.
+
 If you run the backend directly on the host with `bun run dev`, keep the local MySQL host in `.env`:
 
 ```env

@@ -92,6 +92,7 @@ export const env = {
 
   /**
    * Port used by the HTTP server.
+   * Optional; defaults to 3000 when unset.
    * Cloud Run and local development both use this value.
    */
   port: parsePositiveIntegerEnv('PORT', 3000)
