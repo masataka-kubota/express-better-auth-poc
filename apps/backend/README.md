@@ -2,13 +2,13 @@
 
 ## Local verification
 
-The local workflow is split into two parts:
+The local workflow has three main steps:
 
 1. `bun run dev` for local development execution
 2. `bun run container:build` to build a Docker image for the backend
 3. `bun run container:run` to start that backend image as a container for verification
 
-These scripts are intended for different purposes:
+These scripts correspond to the three workflow steps above:
 
 - `bun run dev` runs the backend directly in the local development environment
 - `bun run container:build` builds the Docker image used for container-based verification
