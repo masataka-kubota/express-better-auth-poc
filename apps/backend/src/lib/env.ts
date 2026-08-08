@@ -8,12 +8,42 @@ import 'dotenv/config';
  * @returns The non-empty trimmed value
  * @throws If the variable is missing or empty
  */
-const requireEnv = (name: string): string => {
+export const requireEnv = (name: string): string => {
   const value = process.env[name]?.trim();
   if (!value) {
     throw new Error(`❌ ${name} is not defined. Please set the ${name} environment variable.`);
   }
   return value;
+};
+
+/**
+ * Reads an environment variable as a positive integer.
+ *
+ * @param name - Environment variable name (e.g. `"PORT"`)
+ * @param fallback - Default value used when the variable is unset or empty
+ * @returns The parsed positive integer
+ * @throws If the value is missing, invalid, or not a positive integer
+ */
+export const parsePositiveIntegerEnv = (name: string, fallback?: number): number => {
+  const rawValue = process.env[name]?.trim();
+  const effectiveValue =
+    rawValue && rawValue !== ''
+      ? rawValue
+      : fallback !== undefined
+        ? String(fallback)
+        : requireEnv(name);
+
+  if (!/^\d+$/.test(effectiveValue)) {
+    throw new Error(`❌ ${name} is not a valid positive integer: "${effectiveValue}"`);
+  }
+
+  const parsed = Number.parseInt(effectiveValue, 10);
+
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(`❌ ${name} is not a valid positive integer: "${effectiveValue}"`);
+  }
+
+  return parsed;
 };
 
 /**
@@ -58,7 +88,14 @@ export const env = {
    * Sender email address used in the `from` field of outgoing emails.
    * Example: `noreply@yourdomain.com`
    */
-  smtpFrom: requireEnv('SMTP_FROM')
+  smtpFrom: requireEnv('SMTP_FROM'),
+
+  /**
+   * Port used by the HTTP server.
+   * Optional; defaults to 3000 when unset.
+   * Cloud Run and local development both use this value.
+   */
+  port: parsePositiveIntegerEnv('PORT', 3000)
 } as const;
 
 /**

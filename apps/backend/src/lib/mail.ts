@@ -26,10 +26,12 @@ export const sendEmail = async ({ to, subject, html, text }: SendEmailOptions) =
   }
 
   if (isDev) {
-    // In development, send email to local Mailpit server via nodemailer
+    // In development, send email to local Mailpit server via nodemailer.
+    // Use the container-friendly mailpit hostname when running inside a container,
+    // and localhost for host-based runs.
     const { default: nodemailer } = await import('nodemailer');
     const transporter = nodemailer.createTransport({
-      host: 'localhost',
+      host: process.env.IN_CONTAINER === 'true' ? 'mailpit' : 'localhost',
       port: 1025,
       secure: false
     });

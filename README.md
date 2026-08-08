@@ -44,19 +44,34 @@ cp .env.example .env
 
 Update the backend `.env` file with the required values:
 
+- `NODE_ENV`
+- `PORT`
 - `DATABASE_URL`
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL`
 - `FRONTEND_URLS`
 - `SMTP_FROM`
 
-For local development, Mailpit is expected on `localhost:1025` and the UI is usually available at `http://localhost:8025`.
-
-Start MySQL:
+For local development, run the backend directly with Bun:
 
 ```bash
+cd apps/backend
+bun run dev
+```
+
+The backend API will be available at `http://localhost:3000`.
+
+If you need the database and mail services locally, start the supporting containers with Docker Compose:
+
+```bash
+cd apps/backend
 docker compose up -d
 ```
+
+This starts:
+
+- MySQL at `localhost:3307`
+- Mailpit at `http://localhost:8025`
 
 Run the database migrations and seed a test user:
 
@@ -70,13 +85,19 @@ The seed script creates a user with:
 - Email: `test@example.com`
 - Password: `secure_password_123`
 
-Start the backend:
+To stop the support services later:
 
 ```bash
-bun run dev
+docker compose down
 ```
 
-The backend API will run on `http://localhost:3000`.
+If you also want to verify the backend inside a Docker image, use the container scripts:
+
+```bash
+bun run container:build
+bun run container:run
+bun run container:stop
+```
 
 ## 3. Frontend setup
 
@@ -116,11 +137,16 @@ For local email testing, either use Mailpit or configure a real SMTP/Resend prov
 From `apps/backend`:
 
 ```bash
+bun run dev
+bun run build
 bun run test
 bun run db:generate
 bun run db:migrate
 bun run db:seed
 bun run db:studio
+bun run container:build
+bun run container:run
+bun run container:stop
 ```
 
 This repository is intended as a working proof-of-concept and reference implementation rather than a production-ready application.
