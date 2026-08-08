@@ -45,4 +45,12 @@ describe('parsePositiveIntegerEnv', () => {
       /PORT is not a valid positive integer/
     );
   });
+
+  it('throws when the port contains non-digit characters', () => {
+    process.env.PORT = '3000abc';
+
+    expect(() => parsePositiveIntegerEnv('PORT', 3000)).toThrow(
+      /PORT is not a valid positive integer/
+    );
+  });
 });

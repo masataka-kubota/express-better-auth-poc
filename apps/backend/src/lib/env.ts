@@ -33,6 +33,10 @@ export const parsePositiveIntegerEnv = (name: string, fallback?: number): number
         ? String(fallback)
         : requireEnv(name);
 
+  if (!/^\d+$/.test(effectiveValue)) {
+    throw new Error(`❌ ${name} is not a valid positive integer: "${effectiveValue}"`);
+  }
+
   const parsed = Number.parseInt(effectiveValue, 10);
 
   if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed <= 0) {
