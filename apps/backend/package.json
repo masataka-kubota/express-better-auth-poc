@@ -7,7 +7,7 @@
     "dev": "bun --hot src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun --format esm",
     "container:build": "docker build -t backend:local .",
-    "container:run": "docker run -d --name backend-local -p 3000:3000 --env-file .env backend:local",
+    "container:run": "docker run -d --name backend-local -p 3000:3000 --env-file .env -e IN_CONTAINER=true backend:local",
     "container:stop": "docker rm -f backend-local",
     "type-check": "tsc --noEmit",
     "test": "vitest run",

@@ -65,6 +65,7 @@ describe('sendEmail', () => {
 
   afterEach(() => {
     state.isDev = true;
+    process.env.IN_CONTAINER = undefined;
   });
 
   it('throws when no content is provided', async () => {
@@ -89,6 +90,24 @@ describe('sendEmail', () => {
       subject: 'Hi',
       html: '<p>Hello</p>',
       text: undefined
+    });
+  });
+
+  it('uses Mailpit hostname when IN_CONTAINER is true', async () => {
+    process.env.IN_CONTAINER = 'true';
+
+    const { sendEmail: sendEmailInContainer } = await loadMail();
+
+    await sendEmailInContainer({
+      to: 'user@example.com',
+      subject: 'Hi',
+      html: '<p>Hello</p>'
+    });
+
+    expect(state.createTransport).toHaveBeenCalledWith({
+      host: 'mailpit',
+      port: 1025,
+      secure: false
     });
   });
 

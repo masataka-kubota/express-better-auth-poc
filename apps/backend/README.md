@@ -28,7 +28,7 @@ If you run the backend directly on the host with `bun run dev`, keep the local M
 DATABASE_URL=mysql://app_user:app_password@127.0.0.1:3307/my_app_db
 ```
 
-If you run the backend inside a Docker container with `bun run container:run`, switch to the Docker host alias instead:
+If you run the backend inside a Docker container with `bun run container:run`, the same `.env` file can be used. The script injects `IN_CONTAINER=true`, and the app will automatically use the container-friendly host values for Mailpit and other local service checks. If you need to reach the host MySQL instance from inside Docker, use the Docker host alias instead:
 
 ```env
 DATABASE_URL=mysql://app_user:app_password@host.docker.internal:3307/my_app_db
@@ -36,7 +36,7 @@ DATABASE_URL=mysql://app_user:app_password@host.docker.internal:3307/my_app_db
 
 This is needed on macOS/Windows Docker Desktop because a container cannot reach the host's `127.0.0.1` directly.
 
-When running the backend with `bun run container:run`, note that the app is executed inside a container. If you want it to reach the host MySQL instance, switch `DATABASE_URL` to the container-friendly host value (for example, `DATABASE_URL=mysql://app_user:app_password@host.docker.internal:3307/my_app_db`). Email delivery is currently intended for local development with Mailpit, so container execution may not send mail correctly; in that case, update the SMTP host in `src/lib/mail.ts` to `mailpit`.
+When running the backend with `bun run container:run`, note that the app is executed inside a container. The container runtime automatically selects `mailpit` as the SMTP host; on the host, it uses `localhost`.
 
 Then start the supporting services (MySQL and Mailpit) if you need the app to reach the database or test email delivery:
 
