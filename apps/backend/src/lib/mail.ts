@@ -36,7 +36,7 @@ export const sendEmail = async ({ to, subject, html, text }: SendEmailOptions) =
       secure: false
     });
     await transporter.sendMail({
-      from: env.smtpFrom,
+      from: `Better Auth <${env.smtpFrom}>`,
       to,
       subject,
       html,

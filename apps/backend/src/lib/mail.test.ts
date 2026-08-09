@@ -85,7 +85,7 @@ describe('sendEmail', () => {
 
     const transporter = getLastTransport();
     expect(transporter.sendMail).toHaveBeenCalledWith({
-      from: 'noreply@localhost',
+      from: 'Better Auth <noreply@localhost>',
       to: 'user@example.com',
       subject: 'Hi',
       html: '<p>Hello</p>',
