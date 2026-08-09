@@ -1,3 +1,7 @@
+import { eq } from 'drizzle-orm';
+
+import { db } from '@/db';
+import { user } from '@/db/schema/auth-schema';
 import { auth } from '@/lib/auth';
 
 const main = async () => {
@@ -10,7 +14,12 @@ const main = async () => {
       }
     });
 
-    console.log('シード完了', newUser.user.id);
+    const userId = newUser.user.id;
+    console.log('ユーザー作成完了:', userId);
+
+    await db.update(user).set({ emailVerified: true }).where(eq(user.id, userId));
+
+    console.log('シード完了', userId);
   } catch (error) {
     console.error('シードに失敗しました:', error);
   } finally {
