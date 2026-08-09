@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - "main"
     paths:
       - "apps/backend/**"
       - ".github/workflows/backend-cloudrun-deploy.yml"
@@ -62,12 +62,53 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: bun run db:migrate
 
+      - name: 🔐 Sync runtime secrets to Secret Manager
+        env:
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          ensure_secret() {
+            local secret_name="$1"
+            local secret_value="$2"
+
+            if [ -z "$secret_value" ]; then
+              echo "Missing required secret value for $secret_name" >&2
+              exit 1
+            fi
+
+            if ! gcloud secrets describe "$secret_name" --project="${{ env.PROJECT_ID }}" >/dev/null 2>&1; then
+              gcloud secrets create "$secret_name" \
+                --project="${{ env.PROJECT_ID }}" \
+                --replication-policy=automatic
+            fi
+
+            printf '%s' "$secret_value" | gcloud secrets versions add "$secret_name" \
+              --project="${{ env.PROJECT_ID }}" \
+              --data-file=- >/dev/null
+          }
+
+          ensure_secret "BETTER_AUTH_SECRET" "$BETTER_AUTH_SECRET"
+          ensure_secret "DATABASE_URL" "$DATABASE_URL"
+          ensure_secret "RESEND_API_KEY" "$RESEND_API_KEY"
+
       - name: 🚀 Deploy to Cloud Run
         run: |
           set -euo pipefail
+
+          cat <<'EOF' > /tmp/cloudrun-env-vars.yaml
+          BETTER_AUTH_URL: "${{ vars.BETTER_AUTH_URL }}"
+          SMTP_FROM: "${{ vars.SMTP_FROM }}"
+          FRONTEND_URLS: "${{ vars.FRONTEND_URLS }}"
+          EOF
+
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --project=${{ env.PROJECT_ID }} \
             --image=${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --region=${{ env.REGION }} \
             --platform=managed \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --env-vars-file=/tmp/cloudrun-env-vars.yaml \
+            --set-secrets=BETTER_AUTH_SECRET=BETTER_AUTH_SECRET:latest,DATABASE_URL=DATABASE_URL:latest,RESEND_API_KEY=RESEND_API_KEY:latest
