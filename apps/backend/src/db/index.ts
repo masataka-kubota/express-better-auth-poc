@@ -5,7 +5,10 @@ import { createPool } from 'mysql2';
 
 import { env, isDev } from '@/lib/env';
 
-const mysqlPool = createPool(env.databaseUrl);
-const tidbClient = connect({ url: env.databaseUrl });
-
-export const db = isDev ? drizzleMySql({ client: mysqlPool }) : drizzleTiDB({ client: tidbClient });
+export const db = isDev
+  ? drizzleMySql({
+      client: createPool(env.databaseUrl)
+    })
+  : drizzleTiDB({
+      client: connect({ url: env.databaseUrl })
+    });
