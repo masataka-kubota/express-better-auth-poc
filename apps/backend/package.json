@@ -18,7 +18,7 @@
     "format:check": "oxfmt --check .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "bun --env-file=.env src/db/seed.ts",
+    "db:seed-local": "bun --env-file=.env src/db/seedLocal.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
