@@ -100,7 +100,6 @@ jobs:
           set -euo pipefail
 
           cat <<EOF > /tmp/cloudrun-env-vars.env
-          NODE_ENV="production"
           BETTER_AUTH_URL="${{ vars.BETTER_AUTH_URL }}"
           SMTP_FROM="${{ vars.SMTP_FROM }}"
           FRONTEND_URLS="${{ vars.FRONTEND_URLS }}"
