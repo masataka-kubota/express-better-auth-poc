@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - fix/backend/32-tidb-migration-timestamp-defaults
     paths:
       - "apps/backend/**"
       - ".github/workflows/backend-cloudrun-deploy.yml"
