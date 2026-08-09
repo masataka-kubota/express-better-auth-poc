@@ -52,7 +52,7 @@ export const sendEmail = async ({ to, subject, html, text }: SendEmailOptions) =
 
     const resend = new Resend(env.resendApiKey);
     await resend.emails.send({
-      from: `Better Auth <${env.smtpFrom}>`,
+      from: env.smtpFrom,
       to,
       subject,
       ...(html ? { html } : {}),
