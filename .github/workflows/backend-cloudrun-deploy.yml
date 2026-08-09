@@ -98,10 +98,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          cat <<EOF > /tmp/cloudrun-env-vars.env
-          BETTER_AUTH_URL="${{ vars.BETTER_AUTH_URL }}"
-          SMTP_FROM="${{ vars.SMTP_FROM }}"
-          FRONTEND_URLS="${{ vars.FRONTEND_URLS }}"
+          cat <<'EOF' > /tmp/cloudrun-env-vars.yaml
+          BETTER_AUTH_URL: "${{ vars.BETTER_AUTH_URL }}"
+          SMTP_FROM: "${{ vars.SMTP_FROM }}"
+          FRONTEND_URLS: "${{ vars.FRONTEND_URLS }}"
           EOF
 
           gcloud run deploy ${{ env.SERVICE_NAME }} \
@@ -110,5 +110,5 @@ jobs:
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
-            --env-vars-file=/tmp/cloudrun-env-vars.env \
+            --env-vars-file=/tmp/cloudrun-env-vars.yaml \
             --set-secrets=BETTER_AUTH_SECRET=BETTER_AUTH_SECRET:latest,DATABASE_URL=DATABASE_URL:latest,RESEND_API_KEY=RESEND_API_KEY:latest
