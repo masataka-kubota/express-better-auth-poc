@@ -46,6 +46,12 @@ jobs:
         working-directory: apps/backend
         run: bun run type-check && bun run test
 
+      - name: 🗄️ Run database migrations
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: bun run db:migrate
+
       - name: 🐳 Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
