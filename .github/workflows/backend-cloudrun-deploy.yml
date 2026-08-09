@@ -98,11 +98,19 @@ jobs:
       - name: 🚀 Deploy to Cloud Run
         run: |
           set -euo pipefail
+
+          cat <<EOF > /tmp/cloudrun-env-vars.env
+          NODE_ENV="production"
+          BETTER_AUTH_URL="${{ vars.BETTER_AUTH_URL }}"
+          SMTP_FROM="${{ vars.SMTP_FROM }}"
+          FRONTEND_URLS="${{ vars.FRONTEND_URLS }}"
+          EOF
+
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --project=${{ env.PROJECT_ID }} \
             --image=${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
-            --set-env-vars=NODE_ENV=production,BETTER_AUTH_URL=${{ vars.BETTER_AUTH_URL }},SMTP_FROM=${{ vars.SMTP_FROM }},FRONTEND_URLS=${{ vars.FRONTEND_URLS }} \
+            --env-vars-file=/tmp/cloudrun-env-vars.env \
             --set-secrets=BETTER_AUTH_SECRET=latest,DATABASE_URL=latest,RESEND_API_KEY=latest
