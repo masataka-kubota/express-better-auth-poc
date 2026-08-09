@@ -113,4 +113,4 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --env-vars-file=/tmp/cloudrun-env-vars.env \
-            --set-secrets=BETTER_AUTH_SECRET=latest,DATABASE_URL=latest,RESEND_API_KEY=latest
+            --set-secrets=BETTER_AUTH_SECRET:latest,DATABASE_URL:latest,RESEND_API_KEY:latest
