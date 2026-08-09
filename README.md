@@ -132,6 +132,18 @@ The current POC uses Better Auth email/password authentication with:
 
 For local email testing, either use Mailpit or configure a real SMTP/Resend provider.
 
+## 5. Web deployment to Cloudflare Workers
+
+The web app can be deployed from GitHub Actions with the workflow at [.github/workflows/web-cloudflare-workers-deploy.yml](.github/workflows/web-cloudflare-workers-deploy.yml).
+
+Configure these GitHub values before the first run:
+
+- Repository secret: `CLOUDFLARE_API_TOKEN`
+- Repository secret: `CLOUDFLARE_ACCOUNT_ID`
+- Repository variable: `VITE_BACKEND_BASE_URL`
+
+The workflow runs on pushes to `main` for changes under `apps/web/` and can also be triggered manually from the Actions tab.
+
 ## Useful backend scripts
 
 From `apps/backend`:

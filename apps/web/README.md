@@ -60,3 +60,15 @@ bunx wrangler deploy
 ```
 
 Use `bunx wrangler secret put MY_VAR` for secrets. Public values should be placed in `wrangler.jsonc`.
+
+## GitHub Actions deployment
+
+A workflow is available at [.github/workflows/web-cloudflare-workers-deploy.yml](../../.github/workflows/web-cloudflare-workers-deploy.yml) to deploy the app automatically from GitHub Actions.
+
+The workflow expects these GitHub values to be configured:
+
+- Repository secret: `CLOUDFLARE_API_TOKEN`
+- Repository secret: `CLOUDFLARE_ACCOUNT_ID`
+- Repository variable: `VITE_BACKEND_BASE_URL`
+
+It runs on pushes to `main` when files under `apps/web/` or the workflow file change, and can also be triggered manually from the Actions tab.
