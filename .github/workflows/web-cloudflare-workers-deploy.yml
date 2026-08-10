@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - feat/web/38-add-cloudflare-workers-deploy-for-web
     paths:
       - "apps/web/**"
       - ".github/workflows/web-cloudflare-workers-deploy.yml"
