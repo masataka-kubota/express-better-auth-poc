@@ -34,7 +34,7 @@ jobs:
       - name: ✅ Verify web app
         env:
           VITE_BACKEND_BASE_URL: ${{ vars.VITE_BACKEND_BASE_URL }}
-        run: bun run type-check && bun run test
+        run: bun run type-check && bun run lint && bun run test
 
       - name: 🚀 Deploy to Cloudflare Workers
         env:
