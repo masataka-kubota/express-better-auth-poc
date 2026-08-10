@@ -144,6 +144,30 @@ Configure these GitHub values before the first run:
 
 The workflow runs on pushes to `main` for changes under `apps/web/` and can also be triggered manually from the Actions tab.
 
+## 6. Production-style deployment note
+
+This POC currently works locally for the core authentication flows. For a production-style deployment, the frontend and backend should ideally be served from subdomains under the same parent domain, for example:
+
+- `api.example.com` for the backend
+- `admin.example.com` for the frontend
+
+In that setup, Better Auth can share session cookies across both origins by enabling shared parent-domain cookies. In this repository, this configuration should be applied in the Better Auth setup defined in [apps/backend/src/lib/auth.ts](apps/backend/src/lib/auth.ts). A typical configuration looks like this:
+
+```ts
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: "example.com",
+    },
+  },
+});
+```
+
+This is a production-oriented recommendation rather than a requirement for the current local POC, but it is the expected pattern when the frontend and backend are deployed to different hosts.
+
 ## Useful backend scripts
 
 From `apps/backend`:
